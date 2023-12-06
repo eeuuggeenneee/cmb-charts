@@ -21,6 +21,8 @@ class ZAcc extends Component
     public $zAalarm;
     public $zAwarn;
     public $zAbase;
+    public $latestZacc;
+    public $zAccTime;
     public function mount()
     {
         $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
@@ -78,6 +80,8 @@ class ZAcc extends Component
                         $this->zAalarm = $dataPoint['z-acc-alarm'];
                         $this->zAwarn = $dataPoint['z-acc-warning'];
                         $this->zAbase = $dataPoint['z-acc-baseline'];
+                        $this->latestZacc = $dataPoint['x-acc'];
+                        $this->zAccTime = $timestamp->format('M d y H:i');
                     }
                     //}
 
@@ -91,7 +95,7 @@ class ZAcc extends Component
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm, $this->zAwarn, $this->zAbase
+        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm, $this->zAwarn, $this->zAbase,$this->latestZacc,$this->zAccTime
         );
     }
     public function render()

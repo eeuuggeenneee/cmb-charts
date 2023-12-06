@@ -1,22 +1,63 @@
 <div>
+    <h1 class="text-center mb-3">Z Acceleration</h1>
+    <div class="row">
+        <div class="col-4">
+            <div class="card mb-5">
+                <div class="card-header d-flex align-items-center">
+                    <h4 class="mb-0 mr-3">Latest Data</h4>
+                    <span class="display-4 ml-auto" style="font-size: 1rem;"><strong>{{ $zAccTime }}</strong></span>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="fas fa-shuttle-space fa-3x mr-3 text-black"></i>
+                        <span class="display-4"><strong>{{ $latestZacc }}g</strong></span>
+                    </li>
+                </ul>
+            </div>
+            
+            
+            <div class="card">
+                <div class="card-header">
+                    Legends
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Z Acceleration Alarm: <strong style="color: red;">{{ $zAalarm }}</strong></li>
+                    <li class="list-group-item">Z Acceleration Warning: <strong style="color: blue;">{{ $zAwarn }}</strong></li>
+                    <li class="list-group-item">Z Acceleration Base: <strong style="color: grey;">{{ $zAbase }}</strong></li>
+                </ul>
+                
+                
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                   Z Acceleration
+                </div>
+                <div class="card-body">
+                    <label for="sensorSelector">Select Sensor:</label>
+                    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector">
 
+                        <option selected disabled>Select Sensor</option>
+                        @foreach ($sensorNames as $sensorNumber => $sensorName)
+                            @if ($sensorName == null)
+                            @else
+                                <option value="{{ $sensorNumber }}">
+                                    Sensor {{ $sensorNumber }} - {{ $sensorName }} -
+                                    {{ $machineName[$sensorNumber] ?? '' }}
+                                </option>
+                            @endif
+                        @endforeach
 
-    <label for="sensorSelector">Select Sensor:</label>
-    <!-- your-component.blade.php -->
-    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector">
-        <option selected disabled>Select Sensor</option>
-        @foreach ($sensorNames as $sensorNumber => $sensorName)
-            @if ($sensorName == null)
-            @else
-                <option value="{{ $sensorNumber }}">
-                    Sensor {{ $sensorNumber }} - {{ $sensorName }} - {{ $machineName[$sensorNumber] ?? '' }}
-                </option>
-            @endif
-        @endforeach
-    </select>
+                    </select>
 
-    <div class="card-body">
-        <canvas id="lineChart" width="500" height="500"></canvas>
+                    <div class="card-body">
+                        <canvas id="lineChart" width="500" height="500"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 

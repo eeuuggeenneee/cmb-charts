@@ -53,7 +53,7 @@
     </nav>
 
     <div class="px-5 py-5">
-        @livewire('real-time-chart') 
+        @livewire('z-acc') 
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.js">

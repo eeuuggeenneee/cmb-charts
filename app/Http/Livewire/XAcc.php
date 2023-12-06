@@ -20,6 +20,8 @@ class XAcc extends Component
     public $xAalarm;
     public $xAwarn;
     public $xAbase;
+    public $latestXacc;
+    public $xAccTime;
     public function mount()
     {
         $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
@@ -50,8 +52,13 @@ class XAcc extends Component
            
         }
         //dd($this->sensorData);
-
         $this->apiData = $response->json();
+
+        $this->selectedSensor = 0;
+        
+        $this->selectedSensor();
+     
+    
     }
     public function sensor($selectedSensor)
     {
@@ -67,11 +74,13 @@ class XAcc extends Component
                         $xacc = $dataPoint['x-acc'];
                         $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xacc];
                         $latestTimestamp = $timestamp;
-                        $xacclatest = $xacc;
+                        $zacclatest = $xacc;
                     }else{
                         $this->xAalarm = $dataPoint['x-acc-alarm'];
                         $this->xAwarn = $dataPoint['x-acc-warning'];
                         $this->xAbase = $dataPoint['x-acc-baseline'];
+                        $this->latestXacc = $dataPoint['x-acc'];
+                        $this->xAccTime = $timestamp->format('M d y H:i');
                     }
                     //}
 
@@ -85,7 +94,7 @@ class XAcc extends Component
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->xAalarm, $this->xAwarn, $this->xAbase
+        $this->emit('sensorDataUpdated', $chartData,$this->xAalarm, $this->xAwarn, $this->xAbase, $this->latestXacc,$this->xAccTime
         );
     }
 
