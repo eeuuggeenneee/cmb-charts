@@ -6,9 +6,10 @@
         <div class="col-4">
             <div class="card mb-5">
                 <div class="card-header d-flex align-items-center">
-                    <h4 class="mb-0 mr-3">Latest Data</h4>
-                    <span class="display-4 ml-auto" style="font-size: 1rem;"><strong>{{ $tempTime }}</strong></span>
+                    <h4 class="mb-0 me-3">Latest Data</h4>
+                    <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $tempTime }}</strong></span>
                 </div>
+                
                 
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-center">
@@ -19,6 +20,28 @@
                 </ul>
             </div>
             
+            <div class="card mb-5">
+                <div class="card-header">
+                    Select
+                </div>
+                <div class="card-body">
+                    <label for="sensorSelector">Select Sensor:</label>
+                    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector" class="form-select">
+            
+                        <option selected disabled>Select Sensor</option>
+                        @foreach ($sensorNames as $sensorNumber => $sensorName)
+                            @if ($sensorName == null)
+                            @else
+                                <option value="{{ $sensorNumber }}">
+                                    Sensor {{ $sensorNumber }} - {{ $sensorName }} -
+                                    {{ $machineName[$sensorNumber] ?? '' }}
+                                </option>
+                            @endif
+                        @endforeach
+            
+                    </select>
+                </div>
+            </div>
             
             <div class="card">
                 <div class="card-header">
@@ -32,6 +55,7 @@
                 
                 
             </div>
+
         </div>
         <div class="col-8">
             <div class="card">
@@ -39,22 +63,11 @@
                     Temperature
                 </div>
                 <div class="card-body">
-                    <label for="sensorSelector" class="form-label">Select Sensor:</label>
-                    <select wire:model="selectedSensor" wire:change="selectedSensor" class="form-select mb-3" id="sensorSelector">
-                        <option selected disabled>Select Sensor</option>
-                        @foreach ($sensorNames as $sensorNumber => $sensorName)
-                            @if ($sensorName == null)
-                            @else
-                                <option value="{{ $sensorNumber }}">
-                                    Sensor {{ $sensorNumber }} - {{ $sensorName }} - {{ $machineName[$sensorNumber] ?? '' }}
-                                </option>
-                            @endif
-                        @endforeach
-                    </select>
+                    
             
-                    <div class="card-body">
-                        <canvas id="lineChart" width="500" height="500"></canvas>
-                    </div>
+                    
+                        <canvas id="lineChart" width="500" height="450"></canvas>
+                    
                 </div>
             </div>
             
@@ -120,15 +133,15 @@
                                 annotations: {
                                     line1: {
                                         type: 'line',
-                                        yMin: tempalarm,
-                                        yMax: tempalarm,
+                                        yMin: tempwarning,
+                                        yMax: tempwarning,
                                         borderWidth: 2,
                                         borderColor: 'red'
                                     },
                                     line2: {
                                         type: 'line',
-                                        yMin: tempwarning,
-                                        yMax: tempwarning,
+                                        yMin: tempalarm,
+                                        yMax: tempalarm,
                                         borderWidth: 2,
                                         borderColor: 'blue'
                                     },
