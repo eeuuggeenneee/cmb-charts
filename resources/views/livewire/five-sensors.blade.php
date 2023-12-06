@@ -4,15 +4,15 @@
     <script>
         document.addEventListener('livewire:load', function () {
             var ctx = document.getElementById('lineChart2').getContext('2d');
-            var data = @json($data);
-    
+            var data = @json($data);    
+     
             var datasets = [];
             var primaryColors = [
             'rgb(37, 150, 190)',
             'rgba(0, 0, 198, 255)',
             'rgba(247, 0, 49, 255)',
             'rgba(247, 247, 49, 255)'
-        ];
+             ];
 
             for (var i = 0; i <= 3; i++) {
                 datasets.push({

@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Livewire;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
-use Carbon\Carbon;
+
 
 class RealTimeChart extends Component
 {
@@ -17,8 +17,11 @@ class RealTimeChart extends Component
     public $machineData;
     public $sensorNames;
     public $machineName;
+    public $latestTimestamp;
+    public $latestTemp;
+    public $baselineValues = [80, 70];
 
-        protected $listeners = ['getData' => 'updateChart'];
+    protected $listeners = ['getData' => 'updateChart'];
 
     public function mount()
     {
@@ -114,24 +117,31 @@ class RealTimeChart extends Component
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
                     $timestamp = Carbon::parse($dataPoint['timestamp']);
-                    if (Carbon::parse($timestamp) >= "2023-12-05 12:00:00") {
-                        if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
-                            $temp = $dataPoint['temp'];
-                            $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
-
-                            $latestTimestamp = $timestamp;
-                        }
+                    //if (Carbon::parse($timestamp) >= "2023-12-05 12:00:00") {
+                    if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
+                        $temp = $dataPoint['temp'];
+                        $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
+                        $latestTimestamp = $timestamp;
+                        $latestTemp = $temp;
                     }
+                    //}
+
                 }
             }
         }
 
+        // $this->emit('sensorDataUpdated', [
+        //     'latestTimestamp' => $this->latestTimestamp,
+        //     'latestTemp' => $this->latestTemp,
+        // ]);
         return $chartData;
     }
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData);
+        $this->emit('sensorDataUpdated', 
+            $chartData
+        );
     }
     public function getCurrentData()
     {
@@ -150,6 +160,7 @@ class RealTimeChart extends Component
             'data' => $chartData,
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,
+    
         ]);
     }
 
