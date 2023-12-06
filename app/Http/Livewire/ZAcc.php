@@ -80,7 +80,7 @@ class ZAcc extends Component
                         $this->zAalarm = $dataPoint['z-acc-alarm'];
                         $this->zAwarn = $dataPoint['z-acc-warning'];
                         $this->zAbase = $dataPoint['z-acc-baseline'];
-                        $this->latestZacc = $dataPoint['x-acc'];
+                        $this->latestZacc = $dataPoint['z-acc'];
                         $this->zAccTime = $timestamp->format('M d y H:i');
                     }
                     //}
@@ -95,11 +95,18 @@ class ZAcc extends Component
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm, $this->zAwarn, $this->zAbase,$this->latestZacc,$this->zAccTime
+        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm, $this->zAwarn, $this->zAbase, $this->latestZacc,$this->zAccTime
         );
     }
     public function render()
     {
-        return view('livewire.z-acc');
+        $chartData = $this->sensor($this->selectedSensor);
+
+        return view('livewire.z-acc',[
+            'data' => $chartData,
+            'sensorNames' => $this->sensorNames,
+            'machineName' => $this->machineName,
+
+        ]);
     }
 }

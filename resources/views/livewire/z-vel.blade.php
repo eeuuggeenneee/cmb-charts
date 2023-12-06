@@ -75,17 +75,14 @@
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('lineChart').getContext('2d');
             var chart;
-
-
+            var data5 = @json($data);
+            updateChart(data5);
+            
             Livewire.on('sensorDataUpdated', function(data, zValarm, zVwarn, zVbase) {
                 if (chart) {
                     chart.destroy();
                 }
              
-                updateChart(data, zValarm, zVwarn, zVbase);
-            });
-
-            function updateChart(data, zValarm, zVwarn, zVbase) {
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -147,6 +144,80 @@
                                         type: 'line',
                                         yMin: zValarm, //here
                                         yMax: zValarm, //here
+                                        borderWidth: 2,
+                                        borderColor: 'red'
+                                    },
+                                }
+                            }
+                        },
+                    },
+
+                });
+            });
+
+            function updateChart(data) {
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Sensor',
+                            data: data,
+                            borderColor: 'rgb(75, 192, 192)',
+                            borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: 'day',
+                                    displayFormats: {
+                                        day: 'D',
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Time',
+                                },
+                            }],
+                            yAxes: [{
+                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                                title: {
+                                    display: true,
+                                    text: 'X Velocity',
+                                },
+                                ticks: {
+                                    // Adjust the y-axis scale properties if needed
+                                },
+                            }],
+                        },
+                        plugins: {
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        yMin: <?php echo $zVbase; ?>
+, //here
+                                        yMax: <?php echo $zVbase; ?>, //here
+                                        borderWidth: 2,
+                                        borderColor: 'grey'
+                                    },
+                                    line2: {
+                                        type: 'line',
+                                        yMin: <?php echo $zVwarn; ?>, //here
+                                        yMax: <?php echo $zVwarn; ?>, //here
+                                        borderWidth: 2,
+                                        borderColor: 'blue'
+                                    },
+                                    line3: {
+                                        type: 'line',
+                                        yMin: <?php echo $zValarm; ?>, //here
+                                        yMax: <?php echo $zValarm; ?>, //here
                                         borderWidth: 2,
                                         borderColor: 'red'
                                     },
