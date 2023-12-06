@@ -19,7 +19,7 @@
 @livewireStyles
 
 <body class="antialiased">
-   
+
 
     <nav class="navbar navbar-expand-lg navbar-light shadow" style="background-color: white">
         <img src="{{ asset('storage/pbi.jpg') }}" width="125px" height="40px">
@@ -30,15 +30,28 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-              
-           
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Temperature</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">X Acceleration</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">X Velocity</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Z Acceleration</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Z Velocity</a>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container px-5 py-5">
+    <div class="px-5 py-5">
         {{-- <div class="row">
             <div class="col-4">
                 <div class="card">
@@ -97,23 +110,18 @@
 
         </div> --}}
 
-        <div class="card">
-            <div class="card-header">
-              Compressor
-            </div>
-            <div class="card-body">
-                {{-- @livewire('real-time-chart') --}}
-                @livewire('x-acc')
-            </div>
-          </div>
 
+                {{-- @livewire('x-vel') --}}
+                @livewire('z-vel') 
+    
     </div>
 
 
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.js">
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>

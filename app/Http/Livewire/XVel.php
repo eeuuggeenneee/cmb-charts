@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Livewire;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
-class XAcc extends Component
+class XVel extends Component
 {
     public $chartData;
     public $apiData;
@@ -16,10 +17,12 @@ class XAcc extends Component
     public $sensorNames;
     public $machineName;
     public $latestTimestamp;
-    public $latestTemp;
-    public $xAalarm;
-    public $xAwarn;
-    public $xAbase;
+    public $baselineValues = [80, 70];
+    public $xValarm;
+    public $xVwarn;
+    public $xVbase;
+    public $latestXvel;
+    public $xVelTime;
     public function mount()
     {
         $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
@@ -46,12 +49,14 @@ class XAcc extends Component
             })->toArray();
 
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
-
-           
         }
         //dd($this->sensorData);
-
         $this->apiData = $response->json();
+   
+        $chartData = $this->sensor($this->selectedSensor);
+        $this->emit('sensorDataUpdated', $chartData, $this->xValarm, $this->xVwarn, $this->xVbase);
+     
+
     }
     public function sensor($selectedSensor)
     {
@@ -64,40 +69,40 @@ class XAcc extends Component
                     $timestamp = Carbon::parse($dataPoint['timestamp']);
                     //if (Carbon::parse($timestamp) >= "2023-12-05 12:00:00") {
                     if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
-                        $xacc = $dataPoint['x-acc'];
-                        $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xacc];
+                        $xvel = $dataPoint['x-vel'];
+                      
+                        $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
                         $latestTimestamp = $timestamp;
-                        $xacclatest = $xacc;
                     }else{
-                        $this->xAalarm = $dataPoint['x-acc-alarm'];
-                        $this->xAwarn = $dataPoint['x-acc-warning'];
-                        $this->xAbase = $dataPoint['x-acc-baseline'];
+                        $this->xValarm = $dataPoint['x-vel-alarm'];
+                        $this->xVwarn = $dataPoint['x-vel-warning'];
+                        $this->xVbase = $dataPoint['x-vel-baseline'];
+                        $this->latestXvel = $dataPoint['x-vel'];
+                        $this->xVelTime = $timestamp->format('M d y H:i');
                     }
                     //}
-
+                  
                 }
             }
         }
 
-  
+
         return $chartData;
     }
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->xAalarm, $this->xAwarn, $this->xAbase
-        );
+        $this->emit('sensorDataUpdated', $chartData,$this->xValarm, $this->xVwarn, $this->xVbase,$this->latestXvel,$this->xVelTime);
     }
 
     public function render()
     {
-
-    $chartData = $this->sensor($this->selectedSensor);
-
-        return view('livewire.x-acc',[
+        $chartData = $this->sensor($this->selectedSensor);
+        return view('livewire.x-vel', [
             'data' => $chartData,
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,
+
         ]);
     }
 }

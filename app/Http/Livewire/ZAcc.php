@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Livewire;
+
+use Livewire\Component;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
-use Livewire\Component;
 
-class XAcc extends Component
+class ZAcc extends Component
 {
     public $chartData;
     public $apiData;
@@ -17,9 +18,9 @@ class XAcc extends Component
     public $machineName;
     public $latestTimestamp;
     public $latestTemp;
-    public $xAalarm;
-    public $xAwarn;
-    public $xAbase;
+    public $zAalarm;
+    public $zAwarn;
+    public $zAbase;
     public function mount()
     {
         $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
@@ -50,8 +51,13 @@ class XAcc extends Component
            
         }
         //dd($this->sensorData);
-
         $this->apiData = $response->json();
+
+        $this->selectedSensor = 0;
+        
+        $this->selectedSensor();
+     
+    
     }
     public function sensor($selectedSensor)
     {
@@ -64,14 +70,14 @@ class XAcc extends Component
                     $timestamp = Carbon::parse($dataPoint['timestamp']);
                     //if (Carbon::parse($timestamp) >= "2023-12-05 12:00:00") {
                     if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
-                        $xacc = $dataPoint['x-acc'];
-                        $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xacc];
+                        $zacc = $dataPoint['z-acc'];
+                        $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $zacc];
                         $latestTimestamp = $timestamp;
-                        $xacclatest = $xacc;
+                        $zacclatest = $zacc;
                     }else{
-                        $this->xAalarm = $dataPoint['x-acc-alarm'];
-                        $this->xAwarn = $dataPoint['x-acc-warning'];
-                        $this->xAbase = $dataPoint['x-acc-baseline'];
+                        $this->zAalarm = $dataPoint['z-acc-alarm'];
+                        $this->zAwarn = $dataPoint['z-acc-warning'];
+                        $this->zAbase = $dataPoint['z-acc-baseline'];
                     }
                     //}
 
@@ -85,19 +91,11 @@ class XAcc extends Component
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->xAalarm, $this->xAwarn, $this->xAbase
+        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm, $this->zAwarn, $this->zAbase
         );
     }
-
     public function render()
     {
-
-    $chartData = $this->sensor($this->selectedSensor);
-
-        return view('livewire.x-acc',[
-            'data' => $chartData,
-            'sensorNames' => $this->sensorNames,
-            'machineName' => $this->machineName,
-        ]);
+        return view('livewire.z-acc');
     }
 }

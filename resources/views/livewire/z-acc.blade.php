@@ -26,14 +26,14 @@
             var chart;
             var baselineValues = [50, 40]; // Hardcoded baseline values
 
-            Livewire.on('sensorDataUpdated', function(data,xAalarm, xAwarn, xAbase) {
+            Livewire.on('sensorDataUpdated', function(data,zAalarm, zAwarn, zAbase) {
                 if (chart) {
                     chart.destroy();
                 }
-                updateChart(data,xAalarm, xAwarn, xAbase);
+                updateChart(data,zAalarm, zAwarn, zAbase);
             });
 
-            function updateChart(data,xAalarm, xAwarn, xAbase) {
+            function updateChart(data,zAalarm, zAwarn, zAbase) {
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -79,22 +79,22 @@
                                 annotations: {
                                     line1: {
                                         type: 'line',
-                                        yMin: xAbase,
-                                        yMax: xAbase,
+                                        yMin: zAbase,
+                                        yMax: zAbase,
                                         borderWidth: 2,  
                                         borderColor: 'grey'
                                     },
                                     line2: {
                                         type: 'line',
-                                        yMin: xAwarn,
-                                        yMax: xAwarn,
+                                        yMin: zAwarn,
+                                        yMax: zAwarn,
                                         borderWidth: 2,
                                         borderColor: 'blue'
                                     },
                                     line3: {
                                         type: 'line',
-                                        yMin: xAalarm,
-                                        yMax: xAalarm,
+                                        yMin: zAalarm,
+                                        yMax: zAalarm,
                                         borderWidth: 2,
                                         borderColor: 'red'
                                     },
