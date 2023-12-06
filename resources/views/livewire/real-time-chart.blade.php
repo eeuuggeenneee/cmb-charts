@@ -89,7 +89,77 @@
                     chart.destroy();
                 }
                 console.log(tempalarm);
-                updateChart(data);
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Sensor',
+                            data: data,
+                            borderColor: 'rgb(75, 192, 192)',
+                            borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: 'day',
+                                    displayFormats: {
+                                        day: 'D',
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Time',
+                                },
+                            }],
+                            yAxes: [{
+                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                                title: {
+                                    display: true,
+                                    text: 'Temperature',
+                                },
+                                ticks: {
+                                    // Adjust the y-axis scale properties if needed
+                                },
+                            }],
+                        },
+                        plugins: {
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        yMin: tempalarm, //tempalarm,tempwarning
+                                        yMax: tempalarm,
+                                        borderWidth: 2,
+                                        borderColor: 'red'
+                                    },
+                                    line2: {
+                                        type: 'line',
+                                        yMin: tempwarning,
+                                        yMax: tempwarning,
+                                        borderWidth: 2,
+                                        borderColor: 'blue'
+                                    },
+                                    line4: {
+                                        type: 'line',
+                                        yMin: tempalarm + 10,
+                                        yMax: tempalarm + 10 ,
+                                        borderWidth: 0,
+                                        borderColor: 'pink'
+                                    },
+                                }
+                            }
+                        },
+                    },
+
+                });
+                
             });
             updateChart(data5);
 
@@ -150,6 +220,13 @@
                                         yMax: <?php echo $tempwarning; ?>,
                                         borderWidth: 2,
                                         borderColor: 'blue'
+                                    },
+                                    line4: {
+                                        type: 'line',
+                                        yMin: <?php echo $tempalarm + 10; ?>,
+                                        yMax: <?php echo $tempalarm + 10; ?>,
+                                        borderWidth: 0,
+                                        borderColor: 'pink'
                                     },
                                 }
                             }

@@ -22,36 +22,7 @@
 <body class="antialiased">
 
 
-    <nav class="navbar navbar-expand-lg navbar-light shadow" style="background-color: white">
-        <img src="{{ asset('storage/pbi.jpg') }}" width="125px" height="40px">
-        <a class="navbar-brand" href="#">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}">Temperature</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('xacc') }}">X Acceleration</a>
-
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('xvel') }}">X Velocity</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('zacc') }}">Z Acceleration</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('zvel') }}">Z Velocity</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    @include('header.header')
 
     <div class="px-5 py-5">
         @livewire('z-vel') 
