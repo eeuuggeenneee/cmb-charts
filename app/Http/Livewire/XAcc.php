@@ -73,11 +73,15 @@ class XAcc extends Component
             }
         }
 
-        // $this->emit('sensorDataUpdated', [
-        //     'latestTimestamp' => $this->latestTimestamp,
-        //     'latestTemp' => $this->latestTemp,
-        // ]);
+  
         return $chartData;
+    }
+    public function selectedSensor()
+    {
+        $chartData = $this->sensor($this->selectedSensor);
+        $this->emit('sensorDataUpdated', 
+            $chartData
+        );
     }
 
     public function render()
