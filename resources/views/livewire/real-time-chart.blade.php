@@ -9,8 +9,8 @@
                     <h4 class="mb-0 me-3">Latest Data</h4>
                     <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $tempTime }}</strong></span>
                 </div>
-                
-                
+
+
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-center">
 
@@ -19,15 +19,16 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="card mb-5">
                 <div class="card-header">
                     Select
                 </div>
                 <div class="card-body">
                     <label for="sensorSelector">Select Sensor:</label>
-                    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector" class="form-select">
-            
+                    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector"
+                        class="form-select">
+
                         <option selected disabled>Select Sensor</option>
                         @foreach ($sensorNames as $sensorNumber => $sensorName)
                             @if ($sensorName == null)
@@ -38,22 +39,24 @@
                                 </option>
                             @endif
                         @endforeach
-            
+
                     </select>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     Legends
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Temperature Alarm: <strong style="color: red;">{{ $tempalarm }}°</strong></li>
-                    <li class="list-group-item">Temperature Warning: <strong style="color: blue;">{{ $tempwarning }}°</strong></li>
-                  
+                    <li class="list-group-item">Temperature Alarm: <strong
+                            style="color: red;">{{ $tempalarm }}°</strong></li>
+                    <li class="list-group-item">Temperature Warning: <strong
+                            style="color: blue;">{{ $tempwarning }}°</strong></li>
+
                 </ul>
-                
-                
+
+
             </div>
 
         </div>
@@ -63,14 +66,14 @@
                     Temperature
                 </div>
                 <div class="card-body">
-                    
-            
-                    
-                        <canvas id="lineChart" width="500" height="450"></canvas>
-                    
+
+
+
+                    <canvas id="lineChart" width="500" height="450"></canvas>
+
                 </div>
             </div>
-            
+
         </div>
     </div>
 
@@ -78,16 +81,19 @@
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('lineChart').getContext('2d');
             var chart;
+            var data5 = @json($data);
 
-
-            Livewire.on('sensorDataUpdated', function(data,tempwarning,tempalarm) {
+       
+            Livewire.on('sensorDataUpdated', function(data,tempalarm,tempwarning) {
                 if (chart) {
                     chart.destroy();
                 }
-                updateChart(data,tempwarning,tempalarm);
+                console.log(tempalarm);
+                updateChart(data);
             });
+            updateChart(data5);
 
-            function updateChart(data,tempwarning,tempalarm) {
+            function updateChart(data) {
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -133,15 +139,15 @@
                                 annotations: {
                                     line1: {
                                         type: 'line',
-                                        yMin: tempwarning,
-                                        yMax: tempwarning,
+                                        yMin: <?php echo $tempalarm; ?>,
+                                        yMax: <?php echo $tempalarm; ?>,
                                         borderWidth: 2,
                                         borderColor: 'red'
                                     },
                                     line2: {
                                         type: 'line',
-                                        yMin: tempalarm,
-                                        yMax: tempalarm,
+                                        yMin: <?php echo $tempwarning; ?>,
+                                        yMax: <?php echo $tempwarning; ?>,
                                         borderWidth: 2,
                                         borderColor: 'blue'
                                     },

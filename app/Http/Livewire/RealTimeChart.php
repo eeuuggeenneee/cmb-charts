@@ -56,7 +56,7 @@ class RealTimeChart extends Component
         $this->apiData = $response->json();
    
         $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning);
+        $this->emit('firstload', $chartData,$this->tempalarm, $this->tempwarning,$this->tempTime,$this->latestTemp);
      
 
     }
@@ -100,13 +100,13 @@ class RealTimeChart extends Component
     public function render()
     {
 
-        $chartData = $this->sensor($this->selectedSensor);
 
+        $chartData = $this->sensor($this->selectedSensor);
+    
         return view('livewire.real-time-chart', [
             'data' => $chartData,
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,
-
         ]);
     }
 
