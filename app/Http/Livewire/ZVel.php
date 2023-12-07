@@ -77,7 +77,7 @@ class ZVel extends Component
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
                     $timestamp = Carbon::parse($dataPoint['timestamp']);
-                  if (Carbon::parse($timestamp) >= "2023-12-06 00:00:00") {
+                 // if (Carbon::parse($timestamp) >= "2023-12-06 00:00:00") {
                     if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
                         $zvel = $dataPoint['z-vel'];
 
@@ -87,7 +87,7 @@ class ZVel extends Component
                     
                     }
 
-                    }
+                   // }
 
                     $this->zValarm = $dataPoint['z-vel-alarm'];
                     $this->zVwarn = $dataPoint['z-vel-warning'];

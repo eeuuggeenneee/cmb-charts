@@ -35,6 +35,10 @@ Route::get('/z-acceleration', function () {
     return view('zacc');
 })->name('zacc');
 
+Route::get('/five-sensor', function () {
+    return view('five');
+})->name('five');
+
 
 
 
