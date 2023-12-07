@@ -53,7 +53,12 @@ class XAcc extends Component
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         //dd($this->sensorData);
-
+        if (empty($this->start_date)) {
+            $this->start_date = now()->firstOfMonth()->toDateString();
+        }
+        if (empty($this->end_date)) {
+            $this->end_date = now()->toDateString();
+        }
 
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData,$this->xAbase ,$this->xAalarm, $this->xAwarn, $this->xAccTime, $this->latestXacc);
@@ -111,7 +116,7 @@ class XAcc extends Component
     public function render()
     {
 
-        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->start_date);
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
 
         return view('livewire.x-acc', [
             'data' => $chartData,

@@ -55,7 +55,12 @@ class ZAcc extends Component
            
         }
         //dd($this->sensorData);
-      
+        if (empty($this->start_date)) {
+            $this->start_date = now()->firstOfMonth()->toDateString();
+        }
+        if (empty($this->end_date)) {
+            $this->end_date = now()->toDateString();
+        }
         $this->selectedSensor = 0;
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
 

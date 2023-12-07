@@ -334,15 +334,7 @@
             });
             updateChart(data5);
 
-            window.setInterval(() => {
-                const eventData = {
-                    message: 'Hello from JavaScript!'
-                };
-                window.livewire.emit('customEvent', {
-                    rdata: 'Some data from JavaScript'
-                });
 
-            }, 5000);
 
 
             function updateChart(data) {

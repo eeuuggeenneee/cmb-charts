@@ -54,7 +54,12 @@ class ZVel extends Component
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         //dd($this->sensorData);
-
+        if (empty($this->start_date)) {
+            $this->start_date = now()->firstOfMonth()->toDateString();
+        }
+        if (empty($this->end_date)) {
+            $this->end_date = now()->toDateString();
+        }
 
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData,$this->zValarm ,$this->zVwarn, $this->zVbase, $this->latestZvel, $this->zVelTime);
