@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use Illuminate\Http\Request;
 
 
 class RealTimeChart extends Component
@@ -81,7 +82,27 @@ class RealTimeChart extends Component
         }
     }
     
-
+    public function getSensorData($sensor)
+    {
+        $chartData = [];
+        $latestTimestamp = null;
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $sensor);
+        $this->apiData = $response->json();
+        foreach ($this->apiData as $entry) {
+            if (isset($entry['sensors'][$sensor]['data'])) {
+                foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
+                    $timestamp = Carbon::parse($dataPoint['timestamp']);
+                    if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
+                        $temp = $dataPoint['temp'];
+                        $latestTimestamp = $timestamp;
+                    } else {
+                    }
+                }
+                $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
+            }
+        }
+        return $chartData;
+    }
     public function sensor($selectedSensor, $start_date, $end_date)
     {
         $chartData = [];
@@ -110,6 +131,11 @@ class RealTimeChart extends Component
         return $chartData;
     }
     public function selectedSensor()
+    {
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
+    }
+    public function apiData($sensor)
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);

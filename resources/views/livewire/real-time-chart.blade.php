@@ -22,7 +22,7 @@
 
             <div class="card mb-2">
                 <div class="card-header">
-                     <strong>Filter</strong>
+                    <strong>Filter</strong>
                 </div>
                 <div class="card-body">
 
@@ -46,11 +46,13 @@
                     <div style="border-top: 1px solid black; margin: 10px 0;">
                         <label for="sensorSelect" class="text-center mt-3">Filter Date:</label>
                         <div class="form-group">
-                            <input type="date" wire:ignore class="form-control" id="startDate" wire:model="start_date" wire:change="dateRangeChanged">
+                            <input type="date" wire:ignore class="form-control" id="startDate"
+                                wire:model="start_date" wire:change="dateRangeChanged">
                         </div>
                         <h6 class="text-center">TO</h6>
                         <div class="form-group">
-                            <input type="date"  wire:ignore class="form-control" id="endDate" wire:model="end_date" wire:change="dateRangeChanged">
+                            <input type="date" wire:ignore class="form-control" id="endDate" wire:model="end_date"
+                                wire:change="dateRangeChanged">
                         </div>
                     </div>
                     <h1></h1>
@@ -59,7 +61,7 @@
 
             <div class="card mb-3">
                 <div class="card-header">
-                     <strong>Legends</strong>
+                    <strong>Legends</strong>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Temperature Alarm: <strong
@@ -82,9 +84,6 @@
         </div>
     </div>
     <script>
-     
-   
-      
         const sensorOptions = {
             machine1: [{
                     value: 100,
@@ -245,17 +244,19 @@
     </script>
 
 
-
     <script>
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('lineChart').getContext('2d');
             var chart;
             var data5 = @json($data);
-
+            updateChart(data5, <?php echo $tempalarm; ?>, <?php echo $tempwarning; ?>);
 
             Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime) {
+                updateChart(data, tempalarm, tempwarning);
+            });
 
 
+            function updateChart(data, tempalarm, tempwarning) {
                 if (chart) {
                     chart.destroy();
                 }
@@ -290,14 +291,12 @@
                                 },
                             }],
                             yAxes: [{
-                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                                id: 'y-axis-0',
                                 title: {
                                     display: true,
                                     text: 'Temperature',
                                 },
-                                ticks: {
-                                    // Adjust the y-axis scale properties if needed
-                                },
+                                ticks: {},
                             }],
                         },
                         plugins: {
@@ -305,7 +304,7 @@
                                 annotations: {
                                     line1: {
                                         type: 'line',
-                                        yMin: tempalarm, //tempalarm,tempwarning
+                                        yMin: tempalarm,
                                         yMax: tempalarm,
                                         borderWidth: 2,
                                         borderColor: 'red'
@@ -328,87 +327,16 @@
                             }
                         },
                     },
-
-                });
-
-            });
-            updateChart(data5);
-
-
-
-
-            function updateChart(data) {
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'Sensor',
-                            data: data,
-                            borderColor: 'rgb(75, 192, 192)',
-                            borderWidth: 2,
-                            fill: false,
-                            pointRadius: 0,
-                        }],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            xAxes: [{
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    displayFormats: {
-                                        day: 'D',
-                                    },
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Time',
-                                },
-                            }],
-                            yAxes: [{
-                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
-                                title: {
-                                    display: true,
-                                    text: 'Temperature',
-                                },
-                                ticks: {
-                                    // Adjust the y-axis scale properties if needed
-                                },
-                            }],
-                        },
-                        plugins: {
-                            annotation: {
-                                annotations: {
-                                    line1: {
-                                        type: 'line',
-                                        yMin: <?php echo $tempalarm; ?>,
-                                        yMax: <?php echo $tempalarm; ?>,
-                                        borderWidth: 2,
-                                        borderColor: 'red'
-                                    },
-                                    line2: {
-                                        type: 'line',
-                                        yMin: <?php echo $tempwarning; ?>,
-                                        yMax: <?php echo $tempwarning; ?>,
-                                        borderWidth: 2,
-                                        borderColor: 'blue'
-                                    },
-                                    line4: {
-                                        type: 'line',
-                                        yMin: <?php echo $tempalarm + 10; ?>,
-                                        yMax: <?php echo $tempalarm + 10; ?>,
-                                        borderWidth: 0,
-                                        borderColor: 'pink'
-                                    },
-                                }
-                            }
-                        },
-                    },
-
                 });
             }
+
+
+
+
         });
     </script>
+
+
+
+
 </div>
