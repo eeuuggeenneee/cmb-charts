@@ -1,81 +1,89 @@
 <div>
+    <h1 class="text-center mb-3">X Velocity</h1>
     <div class="row">
-        <div class="col-4">
-            <div class="card mb-5">
-                <div class="card-header d-flex align-items-center">
-                    <h4 class="mb-0 me-3">Latest Data</h4>
-                    <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $xVelTime }}</strong></span>
+        <div class="col-xl-4 col-sm-12">
+            <div class="col-sm-12">
+                <div class="card mb-3">
+                    <div class="card-header d-flex align-items-center">
+                        <h4 class="mb-0 me-3">Latest Data</h4>
+                        <span class="display-4 ms-auto"
+                            style="font-size: 1rem;"><strong>{{ $xVelTime }}</strong></span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center">
+                            <i class="fas fa-shuttle-space fa-3x mr-3 text-black"></i>
+                            <span class="display-4"><strong>{{ $latestXvel }}g</strong></span>
+                        </li>
+                    </ul>
                 </div>
-                
-                
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item text-center">
-                        <i class="fas fa-shuttle-space fa-3x mr-3 text-black"></i>
-                        <span class="display-4"><strong>{{ $latestXvel }}g</strong></span>
-                    </li>
-                </ul>
             </div>
-            
-            <div class="card mb-5">
+
+
+            <div class="card mb-3">
                 <div class="card-header">
                     Select
                 </div>
-                
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="machineSelect">Select Machine:</label>
-                            <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
-                                <option value="machine1">200A</option>
-                                <option value="machine2">200B</option>
-                                <option value="machine3">200C</option>
-                                <option value="machine4">200D</option>
-                                <option value="machine5">90+</option>
-                            </select>
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="sensorSelect">Select Sensor:</label>
-                            <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
-                                wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
-                            </select>
-                        </div>
 
-                        <div style="border-top: 1px solid black; margin: 10px 0;">
-                            <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
-                            <div class="form-group">
-                                <input type="date" wire:ignore class="form-control" id="startDate" wire:model="start_date" wire:change="dateRangeChanged">
-                            </div>
-                            <h6 class="text-center">TO</h6>
-                            <div class="form-group">
-                                <input type="date"  wire:ignore class="form-control" id="endDate" wire:model="end_date" wire:change="dateRangeChanged">
-                            </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="machineSelect">Select Machine:</label>
+                        <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
+                            <option value="machine1">200A</option>
+                            <option value="machine2">200B</option>
+                            <option value="machine3">200C</option>
+                            <option value="machine4">200D</option>
+                            <option value="machine5">90+</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sensorSelect">Select Sensor:</label>
+                        <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
+                            wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
+                        </select>
+                    </div>
+
+                    <div style="border-top: 1px solid black; margin: 10px 0;">
+                        <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
+                        <div class="form-group">
+                            <input type="date" wire:ignore class="form-control" id="startDate"
+                                wire:model="start_date" wire:change="dateRangeChanged">
+                        </div>
+                        <h6 class="text-center">TO</h6>
+                        <div class="form-group">
+                            <input type="date" wire:ignore class="form-control" id="endDate" wire:model="end_date"
+                                wire:change="dateRangeChanged">
                         </div>
                     </div>
-              
+                </div>
+
             </div>
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
                     Legends
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">X Velocity Alarm: <strong style="color: red;">{{ $xValarm }}</strong></li>
-                    <li class="list-group-item">X Velocity Warning: <strong style="color: blue;">{{ $xVwarn }}</strong></li>
-                    <li class="list-group-item">X Velocity Base: <strong style="color: grey;">{{ $xVbase }}</strong></li>
+                    <li class="list-group-item">X Velocity Alarm: <strong
+                            style="color: red;">{{ $xValarm }}</strong></li>
+                    <li class="list-group-item">X Velocity Warning: <strong
+                            style="color: blue;">{{ $xVwarn }}</strong></li>
+                    <li class="list-group-item">X Velocity Base: <strong
+                            style="color: grey;">{{ $xVbase }}</strong></li>
                 </ul>
-                
-                
+
+
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-xl-8 col-sm-12">
             <div class="card">
                 <div class="card-header">
                     X Velocity
                 </div>
                 <div class="card-body">
-                  
-                
-                        <canvas id="lineChart" width="500" height="600"></canvas>
-             
+
+
+                    <canvas id="lineChart" width="500" height="600"></canvas>
+
                 </div>
             </div>
         </div>

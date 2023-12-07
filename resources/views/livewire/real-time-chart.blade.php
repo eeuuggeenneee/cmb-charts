@@ -3,8 +3,8 @@
 
     <h1 class="text-center mb-3">Temperature</h1>
     <div class="row">
-        <div class="col-4">
-            <div class="card mb-5">
+        <div class="col-xl-4 col-sm-12">
+            <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
                     <h4 class="mb-0 me-3">Latest Data</h4>
                     <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $tempTime }}</strong></span>
@@ -20,9 +20,9 @@
                 </ul>
             </div>
 
-            <div class="card mb-5">
+            <div class="card mb-2">
                 <div class="card-header">
-                    Filter
+                     <strong>Filter</strong>
                 </div>
                 <div class="card-body">
 
@@ -44,7 +44,7 @@
                         </select>
                     </div>
                     <div style="border-top: 1px solid black; margin: 10px 0;">
-                        <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
+                        <label for="sensorSelect" class="text-center mt-3">Filter Date:</label>
                         <div class="form-group">
                             <input type="date" wire:ignore class="form-control" id="startDate" wire:model="start_date" wire:change="dateRangeChanged">
                         </div>
@@ -57,9 +57,9 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
-                    Legends
+                     <strong>Legends</strong>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Temperature Alarm: <strong
@@ -69,7 +69,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-xl-8 col-sm-12">
             <div class="card">
                 <div class="card-header">
                     Temperature

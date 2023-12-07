@@ -1,8 +1,8 @@
 <div>
     <h1 class="text-center mb-3">Z Velocity</h1>
     <div class="row">
-        <div class="col-4">
-            <div class="card mb-5">
+        <div class="col-xl-4 col-sm-12">
+            <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
                     <h4 class="mb-0 me-3">Latest Data</h4>
                     <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $zVelTime }}</strong></span>
@@ -15,7 +15,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="card mb-5">
+            <div class="card mb-3">
                 <div class="card-header">
                     Select
                 </div>
@@ -54,7 +54,7 @@
               
             </div>
 
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
                     Legends
                 </div>
@@ -70,7 +70,7 @@
 
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-xl-8 col-sm-12">
             <div class="card">
                 <div class="card-header">
                     Z Velocity
