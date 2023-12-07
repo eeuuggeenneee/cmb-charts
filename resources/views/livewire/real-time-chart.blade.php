@@ -39,8 +39,8 @@
 
                     <div class="form-group mb-3">
                         <label for="sensorSelect">Select Sensor:</label>
-                        <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
-                            wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
+                        <select class="form-control" id="sensorSelect" wire:model="selectedSensor"
+                            wire:change="selectedSensor" wire:ignore>
                         </select>
                     </div>
                     <div style="border-top: 1px solid black; margin: 10px 0;">
@@ -201,15 +201,38 @@
                 },
             ],
         };
+        const selectedMachine = document.getElementById("machineSelect").value;
+        const sensorSelect = document.getElementById("sensorSelect");
+        var selectedSensorValue = document.getElementById("sensorSelect").value;
+
+        if (selectedSensorValue == "") {
+            selectedSensorValue = 0;
+
+        } else {
+            console.log(selectedSensorValue);
+        }
+
+
+        async function fetchDataAndUpdateChart(chart) {
+            try {
+                var response = await fetch('http://127.0.0.1:8000/api/sensor-data/' + selectedSensorValue);
+                var jsonData = await response.json();
+
+                var newData = jsonData.map(entry => ({
+                    x: new Date(entry.x),
+                    y: entry.y
+                }));
+
+                updateChart(chart, newData, <?php echo $tempalarm; ?>, <?php echo $tempwarning; ?>);
+
+            } catch (error) {
+
+            }
+        }
+
 
         function updateSensorOptions() {
-            const selectedMachine = document.getElementById("machineSelect").value;
-            const sensorSelect = document.getElementById("sensorSelect");
-
-            // Clear existing options
             sensorSelect.innerHTML = "";
-
-            // If a machine is selected, show the sensor options
             if (selectedMachine !== "") {
                 const sensorOptionsList = sensorOptions[selectedMachine];
                 sensorOptionsList.forEach(sensor => {
@@ -232,30 +255,20 @@
             }
         }
 
-        function displaySensorValue() {
-            const selectedSensorValue = document.getElementById("sensorSelect").value;
 
-            if (selectedSensorValue !== "") {
-                console.log("Selected Sensor Value: " + selectedSensorValue);
-            }
-        }
+
 
         updateSensorOptions();
-    </script>
 
-
-    <script>
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('lineChart').getContext('2d');
             var chart;
             var data5 = @json($data);
             updateChart(data5, <?php echo $tempalarm; ?>, <?php echo $tempwarning; ?>);
 
-            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime) {
+            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, latestTemp, ) {
                 updateChart(data, tempalarm, tempwarning);
             });
-
-
             function updateChart(data, tempalarm, tempwarning) {
                 if (chart) {
                     chart.destroy();
@@ -327,11 +340,12 @@
                             }
                         },
                     },
+
                 });
+                chart.update();
             }
 
-
-
+           
 
         });
     </script>
