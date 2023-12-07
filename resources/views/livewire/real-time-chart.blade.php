@@ -215,10 +215,8 @@
                     sensorSelect.add(option);
                 });
 
-                // Enable the sensor select
                 sensorSelect.removeAttribute("disabled");
             } else {
-                // If no machine is selected, disable the sensor select and clear the selected value
                 sensorSelect.setAttribute("disabled", "disabled");
                 sensorSelect.value = "";
             }
@@ -227,7 +225,6 @@
         function displaySensorValue() {
             const selectedSensorValue = document.getElementById("sensorSelect").value;
 
-            // Display the selected sensor value only if a sensor is selected
             if (selectedSensorValue !== "") {
                 console.log("Selected Sensor Value: " + selectedSensorValue);
             }
