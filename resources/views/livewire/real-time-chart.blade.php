@@ -26,12 +26,15 @@
                 </div>
                 <div class="card-body">
                     <label for="sensorSelector">Select Sensor:</label>
+
+                    
                     <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector"
                         class="form-select">
 
                         <option selected disabled>Select Sensor</option>
                         @foreach ($sensorNames as $sensorNumber => $sensorName)
                             @if ($sensorName == null)
+
                             @else
                                 <option value="{{ $sensorNumber }}">
                                     Sensor {{ $sensorNumber }} - {{ $sensorName }} -
@@ -53,12 +56,8 @@
                             style="color: red;">{{ $tempalarm }}°</strong></li>
                     <li class="list-group-item">Temperature Warning: <strong
                             style="color: blue;">{{ $tempwarning }}°</strong></li>
-
                 </ul>
-
-
             </div>
-
         </div>
         <div class="col-8">
             <div class="card">
@@ -68,9 +67,7 @@
                 <div class="card-body">
 
 
-
                     <canvas id="lineChart" width="500" height="450"></canvas>
-
                 </div>
             </div>
 
@@ -83,12 +80,14 @@
             var chart;
             var data5 = @json($data);
 
-       
-            Livewire.on('sensorDataUpdated', function(data,tempalarm,tempwarning) {
+
+            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime) {
+
+               
                 if (chart) {
                     chart.destroy();
                 }
-                console.log(tempalarm);
+       
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -149,7 +148,7 @@
                                     line4: {
                                         type: 'line',
                                         yMin: tempalarm + 10,
-                                        yMax: tempalarm + 10 ,
+                                        yMax: tempalarm + 10,
                                         borderWidth: 0,
                                         borderColor: 'pink'
                                     },
@@ -159,9 +158,20 @@
                     },
 
                 });
-                
+
             });
             updateChart(data5);
+
+            window.setInterval(() => {
+                const eventData = {
+                    message: 'Hello from JavaScript!'
+                };
+                window.livewire.emit('customEvent', {
+                    rdata: 'Some data from JavaScript'
+                });
+
+            }, 5000);
+
 
             function updateChart(data) {
                 chart = new Chart(ctx, {

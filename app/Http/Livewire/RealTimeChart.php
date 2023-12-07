@@ -11,7 +11,7 @@ class RealTimeChart extends Component
 
     public $chartData;
     public $apiData;
-    public $initialData;
+    public $selectedMachine;
     public $selectedSensor = 0;
     public $sensorData;
     public $machineData;
@@ -27,7 +27,6 @@ class RealTimeChart extends Component
 
     public function mount()
     {
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
 
         $machineResponse = Http::get('http://172.31.2.124:5000/cbmdata/compressorlist');
         $this->machineData = $machineResponse->json();
@@ -42,7 +41,6 @@ class RealTimeChart extends Component
             $firstKey = key($this->sensorData);
             $this->selectedSensor = $firstKey;
 
-            // Replace machineID with machineName in the sensor data
             $this->sensorData = collect($this->sensorData)->map(function ($sensor) {
                 $machineID = $sensor['machineID'] ?? null;
                 $sensor['machineName'] = $this->machineData[$machineID]['compressorname'] ?? '';
@@ -53,18 +51,26 @@ class RealTimeChart extends Component
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         //dd($this->sensorData);
-        $this->apiData = $response->json();
+    
    
         $chartData = $this->sensor($this->selectedSensor);
         $this->emit('firstload', $chartData,$this->tempalarm, $this->tempwarning,$this->tempTime,$this->latestTemp);
      
 
     }
+    public function updatedSelectedMachine()
+    {
+        $this->selectedSensor = null;
+        $this->emit('machineChanged', $this->selectedMachine); 
+    }
+
+    
     public function sensor($selectedSensor)
     {
         $chartData = [];
         $latestTimestamp = null;
-
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids='.$selectedSensor);
+        $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
@@ -76,15 +82,16 @@ class RealTimeChart extends Component
                         $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
                         $latestTimestamp = $timestamp;
                     }else{
-                        $this->tempalarm = $dataPoint['temp-alarm'];
-                        $this->tempwarning = $dataPoint['temp-warning'];
-                 
-                        $this->latestTemp = $dataPoint['temp'];
-                        $this->tempTime = $timestamp->format('M d y H:i');
+                      
                     }
                     //}
                   
                 }
+                $this->tempalarm = $dataPoint['temp-alarm'];
+                $this->tempwarning = $dataPoint['temp-warning'];
+         
+                $this->latestTemp = $dataPoint['temp'];
+                $this->tempTime = $timestamp->format('M d y H:i');
             }
         }
 

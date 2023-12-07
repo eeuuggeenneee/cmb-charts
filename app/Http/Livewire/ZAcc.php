@@ -25,7 +25,7 @@ class ZAcc extends Component
     public $zAccTime;
     public function mount()
     {
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
+      
 
         $machineResponse = Http::get('http://172.31.2.124:5000/cbmdata/compressorlist');
         $this->machineData = $machineResponse->json();
@@ -53,8 +53,7 @@ class ZAcc extends Component
            
         }
         //dd($this->sensorData);
-        $this->apiData = $response->json();
-
+      
         $this->selectedSensor = 0;
         
         $this->selectedSensor();
@@ -65,7 +64,8 @@ class ZAcc extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids='.$selectedSensor);
+        $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
@@ -77,15 +77,16 @@ class ZAcc extends Component
                         $latestTimestamp = $timestamp;
                         $zacclatest = $zacc;
                     }else{
-                        $this->zAalarm = $dataPoint['z-acc-alarm'];
-                        $this->zAwarn = $dataPoint['z-acc-warning'];
-                        $this->zAbase = $dataPoint['z-acc-baseline'];
-                        $this->latestZacc = $dataPoint['z-acc'];
-                        $this->zAccTime = $timestamp->format('M d y H:i');
+                       
                     }
                     //}
 
                 }
+                $this->zAalarm = $dataPoint['z-acc-alarm'];
+                $this->zAwarn = $dataPoint['z-acc-warning'];
+                $this->zAbase = $dataPoint['z-acc-baseline'];
+                $this->latestZacc = $dataPoint['z-acc'];
+                $this->zAccTime = $timestamp->format('M d y H:i');
             }
         }
 

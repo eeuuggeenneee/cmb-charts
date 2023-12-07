@@ -7,7 +7,7 @@
                     <h4 class="mb-0 me-3">Latest Data</h4>
                     <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $zVelTime }}</strong></span>
                 </div>
-                
+
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-center">
                         <i class="fas fa-shuttle-space fa-3x mr-3 text-black"></i>
@@ -21,8 +21,9 @@
                 </div>
                 <div class="card-body">
                     <label for="sensorSelector">Select Sensor:</label>
-                    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector" class="form-select">
-            
+                    <select wire:model="selectedSensor" wire:change="selectedSensor" id="sensorSelector"
+                        class="form-select">
+
                         <option selected disabled>Select Sensor</option>
                         @foreach ($sensorNames as $sensorNumber => $sensorName)
                             @if ($sensorName == null)
@@ -33,36 +34,39 @@
                                 </option>
                             @endif
                         @endforeach
-            
+
                     </select>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     Legends
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Z Velocity Alarm: <strong style="color: red;">{{ $zValarm }}</strong></li>
-                    <li class="list-group-item">Z Velocity Warning: <strong style="color: blue;">{{ $zVwarn }}</strong></li>
-                    <li class="list-group-item">Z Velocity Base: <strong style="color: grey;">{{ $zVbase }}</strong></li>
+                    <li class="list-group-item">Z Velocity Alarm: <strong
+                            style="color: red;">{{ $zValarm }}</strong></li>
+                    <li class="list-group-item">Z Velocity Warning: <strong
+                            style="color: blue;">{{ $zVwarn }}</strong></li>
+                    <li class="list-group-item">Z Velocity Base: <strong
+                            style="color: grey;">{{ $zVbase }}</strong></li>
                 </ul>
-                
-                
+
+
             </div>
         </div>
         <div class="col-8">
             <div class="card">
                 <div class="card-header">
-                   Z Velocity
+                    Z Velocity
                 </div>
                 <div class="card-body">
-                
-              
 
-                 
-                        <canvas id="lineChart" width="500" height="500"></canvas>
-              
+
+
+
+                    <canvas id="lineChart" width="500" height="500"></canvas>
+
                 </div>
             </div>
         </div>
@@ -77,12 +81,12 @@
             var chart;
             var data5 = @json($data);
             updateChart(data5);
-            
+
             Livewire.on('sensorDataUpdated', function(data, zValarm, zVwarn, zVbase) {
                 if (chart) {
                     chart.destroy();
                 }
-             
+
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -155,6 +159,17 @@
                 });
             });
 
+
+            // window.setInterval(() => {
+            //     const eventData = {
+            //         message: 'Hello from JavaScript!'
+            //     };
+            //     window.livewire.emit('customEvent', {
+            //         rdata: 'Some data from JavaScript'
+            //     });
+            //     console.log("test");
+            // }, 5000);
+
             function updateChart(data) {
                 chart = new Chart(ctx, {
                     type: 'line',
@@ -201,8 +216,7 @@
                                 annotations: {
                                     line1: {
                                         type: 'line',
-                                        yMin: <?php echo $zVbase; ?>
-, //here
+                                        yMin: <?php echo $zVbase; ?>, //here
                                         yMax: <?php echo $zVbase; ?>, //here
                                         borderWidth: 2,
                                         borderColor: 'grey'
@@ -231,5 +245,5 @@
         });
     </script>
 
-    
+
 </div>

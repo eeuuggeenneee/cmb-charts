@@ -25,7 +25,7 @@ class XVel extends Component
     public $xVelTime;
     public function mount()
     {
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata');
+
 
         $machineResponse = Http::get('http://172.31.2.124:5000/cbmdata/compressorlist');
         $this->machineData = $machineResponse->json();
@@ -51,7 +51,7 @@ class XVel extends Component
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         //dd($this->sensorData);
-        $this->apiData = $response->json();
+ 
    
         $chartData = $this->sensor($this->selectedSensor);
         $this->emit('sensorDataUpdated', $chartData, $this->xValarm, $this->xVwarn, $this->xVbase);
@@ -62,7 +62,8 @@ class XVel extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids='.$selectedSensor);
+        $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
@@ -74,15 +75,16 @@ class XVel extends Component
                         $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
                         $latestTimestamp = $timestamp;
                     }else{
-                        $this->xValarm = $dataPoint['x-vel-alarm'];
-                        $this->xVwarn = $dataPoint['x-vel-warning'];
-                        $this->xVbase = $dataPoint['x-vel-baseline'];
-                        $this->latestXvel = $dataPoint['x-vel'];
-                        $this->xVelTime = $timestamp->format('M d y H:i');
+            
                     }
                     //}
                   
                 }
+                $this->xValarm = $dataPoint['x-vel-alarm'];
+                $this->xVwarn = $dataPoint['x-vel-warning'];
+                $this->xVbase = $dataPoint['x-vel-baseline'];
+                $this->latestXvel = $dataPoint['x-vel'];
+                $this->xVelTime = $timestamp->format('M d y H:i');
             }
         }
 
