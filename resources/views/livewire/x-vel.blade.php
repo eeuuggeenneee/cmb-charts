@@ -12,7 +12,7 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item text-center">
                             <i class="fas fa-shuttle-space fa-3x mr-3 text-black"></i>
-                            <span class="display-4"><strong>{{ $latestXvel }}g</strong></span>
+                            <span class="display-5"><strong>{{ $latestXvel }}mm/s</strong></span>
                         </li>
                     </ul>
                 </div>
@@ -89,20 +89,21 @@
         </div>
     </div>
 
-
-
-
     <script>
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('lineChart').getContext('2d');
             var chart;
             var data5 = @json($data);
-            updateChart(data5);
+            updateChart(data5, xValarm, xVwarn, xVbase)
 
             Livewire.on('sensorDataUpdated', function(data, xValarm, xVwarn, xVbase) {
                 if (chart) {
                     chart.destroy();
                 }
+                updateChart(data, <?php echo $xVbase; ?>, <?php echo $xVwarn; ?>, <?php echo $xValarm; ?>)
+            });
+
+            function updateChart(data, xValarm, xVwarn, xVbase) {
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -133,13 +134,12 @@
                                 },
                             }],
                             yAxes: [{
-                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                                id: 'y-axis-0', 
                                 title: {
                                     display: true,
                                     text: 'X Velocity',
                                 },
                                 ticks: {
-                                    // Adjust the y-axis scale properties if needed
                                 },
                             }],
                         },
@@ -164,79 +164,6 @@
                                         type: 'line',
                                         yMin: xValarm, //here
                                         yMax: xValarm, //here
-                                        borderWidth: 2,
-                                        borderColor: 'red'
-                                    },
-                                }
-                            }
-                        },
-                    },
-
-                });
-            });
-
-            function updateChart(data) {
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'Sensor',
-                            data: data,
-                            borderColor: 'rgb(75, 192, 192)',
-                            borderWidth: 2,
-                            fill: false,
-                            pointRadius: 0,
-                        }],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            xAxes: [{
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    displayFormats: {
-                                        day: 'D',
-                                    },
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Time',
-                                },
-                            }],
-                            yAxes: [{
-                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
-                                title: {
-                                    display: true,
-                                    text: 'X Velocity',
-                                },
-                                ticks: {
-                                    // Adjust the y-axis scale properties if needed
-                                },
-                            }],
-                        },
-                        plugins: {
-                            annotation: {
-                                annotations: {
-                                    line1: {
-                                        type: 'line',
-                                        yMin: <?php echo $xVbase; ?>, //here
-                                        yMax: <?php echo $xVbase; ?>, //here
-                                        borderWidth: 2,
-                                        borderColor: 'grey'
-                                    },
-                                    line2: {
-                                        type: 'line',
-                                        yMin: <?php echo $xVwarn; ?>, //here
-                                        yMax: <?php echo $xVwarn; ?>, //here
-                                        borderWidth: 2,
-                                        borderColor: 'blue'
-                                    },
-                                    line3: {
-                                        type: 'line',
-                                        yMin: <?php echo $xValarm; ?>, //here
-                                        yMax: <?php echo $xValarm; ?>, //here
                                         borderWidth: 2,
                                         borderColor: 'red'
                                     },

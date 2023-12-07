@@ -61,7 +61,7 @@ class RealTimeChart extends Component
             $this->start_date = now()->firstOfMonth()->toDateString();
         }
         if (empty($this->end_date)) {
-            $this->end_date = now()->toDateString();
+            $this->end_date = now()->addDay()->toDateString();
         }
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
@@ -92,11 +92,9 @@ class RealTimeChart extends Component
             if (isset($entry['sensors'][$sensor]['data'])) {
                 foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
                     $timestamp = Carbon::parse($dataPoint['timestamp']);
-                    if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
                         $temp = $dataPoint['temp'];
-                        $latestTimestamp = $timestamp;
-                    } else {
-                    }
+                       
+                  
                 }
                 $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
             }
@@ -135,16 +133,13 @@ class RealTimeChart extends Component
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
     }
-    public function apiData($sensor)
-    {
-        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
-        $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
-    }
-    
+
 
     public function render()
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+
+
         return view('livewire.real-time-chart', [
             'data' => $chartData,
             'sensorNames' => $this->sensorNames,

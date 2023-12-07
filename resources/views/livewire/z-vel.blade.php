@@ -11,7 +11,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-center">
                         <i class="fas fa-shuttle-space fa-3x mr-3 text-black"></i>
-                        <span class="display-4"><strong>{{ $latestZvel }}g</strong></span>
+                        <span class="display-5"><strong>{{ $latestZvel }}mm/s</strong></span>
                     </li>
                 </ul>
             </div>

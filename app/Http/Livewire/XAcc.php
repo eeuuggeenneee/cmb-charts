@@ -57,7 +57,7 @@ class XAcc extends Component
             $this->start_date = now()->firstOfMonth()->toDateString();
         }
         if (empty($this->end_date)) {
-            $this->end_date = now()->toDateString();
+            $this->end_date = now()->addDay()->toDateString();
         }
 
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
