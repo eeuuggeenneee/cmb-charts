@@ -43,7 +43,6 @@
                             wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
                         </select>
                     </div>
-
                     <div style="border-top: 1px solid black; margin: 10px 0;">
                         <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
                         <div class="form-group">
@@ -54,7 +53,6 @@
                             <input type="date"  wire:ignore class="form-control" id="endDate" wire:model="end_date" wire:change="dateRangeChanged">
                         </div>
                     </div>
-
                     <h1></h1>
                 </div>
             </div>
@@ -84,18 +82,9 @@
         </div>
     </div>
     <script>
-        var currentDate = new Date();
-
-
+     
    
-        var firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        var formattedFirstDay = firstDay.toLocaleDateString('en-CA');
-        document.getElementById('startDate').value = formattedFirstDay;
-
-   
-        var lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        var formattedLastDay = lastDay.toLocaleDateString('en-CA'); 
-        document.getElementById('endDate').value = formattedLastDay;
+      
         const sensorOptions = {
             machine1: [{
                     value: 100,

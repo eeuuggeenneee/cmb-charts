@@ -14,8 +14,7 @@ class RealTimeChart extends Component
     public $apiData;
     public $selectedMachine;
     public $selectedSensor = 0;
-    public $start_date;
-    public $end_date;
+ 
     public $sensorData;
     public $machineData;
     public $sensorNames;
@@ -25,11 +24,13 @@ class RealTimeChart extends Component
     public $tempwarning;
     public $tempalarm;
     public $tempTime;
-
+    public $start_date;
+    public $end_date;
 
 
     public function mount()
     {
+
 
         $machineResponse = Http::get('http://172.31.2.124:5000/cbmdata/compressorlist');
         $this->machineData = $machineResponse->json();
@@ -44,6 +45,7 @@ class RealTimeChart extends Component
             $firstKey = key($this->sensorData);
             $this->selectedSensor = $firstKey;
 
+            // Replace machineID with machineName in the sensor data
             $this->sensorData = collect($this->sensorData)->map(function ($sensor) {
                 $machineID = $sensor['machineID'] ?? null;
                 $sensor['machineName'] = $this->machineData[$machineID]['compressorname'] ?? '';
@@ -53,12 +55,9 @@ class RealTimeChart extends Component
 
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
-
-        //dd($this->sensorData);
-
-
-        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->start_date);
-        $this->emit('firstload', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
+      
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
     }
 
     public function dateRangeChanged()

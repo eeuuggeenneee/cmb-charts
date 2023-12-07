@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Livewire;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
@@ -22,9 +23,11 @@ class XAcc extends Component
     public $xAbase;
     public $latestXacc;
     public $xAccTime;
+    public $start_date;
+    public $end_date;
     public function mount()
     {
-       
+
 
         $machineResponse = Http::get('http://172.31.2.124:5000/cbmdata/compressorlist');
         $this->machineData = $machineResponse->json();
@@ -48,23 +51,33 @@ class XAcc extends Component
             })->toArray();
 
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
-
-           
         }
         //dd($this->sensorData);
 
 
-        $this->selectedSensor = 0;
-        
-        $this->selectedSensor();
-     
-    
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->xAbase ,$this->xAalarm, $this->xAwarn, $this->xAccTime, $this->latestXacc);
     }
-    public function sensor($selectedSensor)
+    public function dateRangeChanged()
+    {
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->xAbase ,$this->xAalarm, $this->xAwarn, $this->xAccTime, $this->latestXacc);
+    }
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'selectedMachine') {
+            $this->selectedSensor = null;
+            $this->emit('machineChanged', $this->selectedMachine);
+        } elseif ($propertyName === 'selectedSensor' || $propertyName === 'start_date' || $propertyName === 'end_date') {
+            $this->dateRangeChanged();
+        }
+    }
+
+    public function sensor($selectedSensor, $start_date, $end_date)
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids='.$selectedSensor);
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date . '&end_date=' . $end_date);
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -76,8 +89,7 @@ class XAcc extends Component
                         $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xacc];
                         $latestTimestamp = $timestamp;
                         $zacclatest = $xacc;
-                    }else{
-                       
+                    } else {
                     }
                     //}
 
@@ -89,23 +101,19 @@ class XAcc extends Component
                 $this->xAccTime = $timestamp->format('M d y H:i');
             }
         }
-
-  
         return $chartData;
     }
     public function selectedSensor()
     {
-        $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->xAalarm, $this->xAwarn, $this->xAbase, $this->latestXacc,$this->xAccTime
-        );
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->xAbase ,$this->xAalarm, $this->xAwarn, $this->xAccTime, $this->latestXacc);
     }
-
     public function render()
     {
 
-    $chartData = $this->sensor($this->selectedSensor);
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->start_date);
 
-        return view('livewire.x-acc',[
+        return view('livewire.x-acc', [
             'data' => $chartData,
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,

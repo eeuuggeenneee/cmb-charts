@@ -23,6 +23,8 @@ class ZAcc extends Component
     public $zAbase;
     public $latestZacc;
     public $zAccTime;
+    public $start_date;
+    public $end_date;
     public function mount()
     {
       
@@ -55,16 +57,31 @@ class ZAcc extends Component
         //dd($this->sensorData);
       
         $this->selectedSensor = 0;
-        
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+
         $this->selectedSensor();
      
     
     }
-    public function sensor($selectedSensor)
+    public function dateRangeChanged()
+    {
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm ,$this->zAwarn, $this->zAbase, $this->latestZacc, $this->zAccTime);
+    }
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'selectedMachine') {
+            $this->selectedSensor = null;
+            $this->emit('machineChanged', $this->selectedMachine);
+        } elseif ($propertyName === 'selectedSensor' || $propertyName === 'start_date' || $propertyName === 'end_date') {
+            $this->dateRangeChanged();
+        }
+    }
+    public function sensor($selectedSensor, $start_date, $end_date)
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids='.$selectedSensor);
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date . '&end_date=' . $end_date);
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -95,13 +112,12 @@ class ZAcc extends Component
     }
     public function selectedSensor()
     {
-        $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm, $this->zAwarn, $this->zAbase, $this->latestZacc,$this->zAccTime
-        );
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->zAalarm ,$this->zAwarn, $this->zAbase, $this->latestZacc, $this->zAccTime);
     }
     public function render()
     {
-        $chartData = $this->sensor($this->selectedSensor);
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
 
         return view('livewire.z-acc',[
             'data' => $chartData,

@@ -39,7 +39,16 @@
                                 wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
                             </select>
                         </div>
-              
+                        <div style="border-top: 1px solid black; margin: 10px 0;">
+                            <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
+                            <div class="form-group">
+                                <input type="date" wire:ignore class="form-control" id="startDate" wire:model="start_date" wire:change="dateRangeChanged">
+                            </div>
+                            <h6 class="text-center">TO</h6>
+                            <div class="form-group">
+                                <input type="date"  wire:ignore class="form-control" id="endDate" wire:model="end_date" wire:change="dateRangeChanged">
+                            </div>
+                        </div>
                 </div>
             </div>
             <div class="card">

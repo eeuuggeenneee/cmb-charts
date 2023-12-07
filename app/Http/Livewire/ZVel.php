@@ -24,6 +24,8 @@ class ZVel extends Component
     public $latestZvel;
     public $zVelTime;
     public $receivedData;
+    public $start_date;
+    public $end_date;
     public function mount()
     {
  
@@ -54,24 +56,29 @@ class ZVel extends Component
         //dd($this->sensorData);
 
 
-        $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData, $this->zValarm, $this->zVwarn, $this->zVbase);
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->zValarm ,$this->zVwarn, $this->zVbase, $this->latestZvel, $this->zVelTime);
     }
-    protected $listeners = ['customEvent' => 'handlePeriodicEvent'];
 
-    public function handleCustomEvent($rdata)
+    public function dateRangeChanged()
     {
-        $this->receivedData = $rdata['rdata'];
-        dd($this->receivedData);
-        // $chartData = $this->sensor($this->selectedSensor);
-        // $this->emit('sensorDataUpdated', $chartData,$this->tempalarm, $this->tempwarning,$this->tempTime,$this->latestTemp);
-
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->zValarm ,$this->zVwarn, $this->zVbase, $this->latestZvel, $this->zVelTime);
     }
-    public function sensor($selectedSensor)
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'selectedMachine') {
+            $this->selectedSensor = null;
+            $this->emit('machineChanged', $this->selectedMachine);
+        } elseif ($propertyName === 'selectedSensor' || $propertyName === 'start_date' || $propertyName === 'end_date') {
+            $this->dateRangeChanged();
+        }
+    }
+    public function sensor($selectedSensor, $start_date, $end_date)
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids='.$selectedSensor);
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date . '&end_date=' . $end_date);
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -104,12 +111,12 @@ class ZVel extends Component
     }
     public function selectedSensor()
     {
-        $chartData = $this->sensor($this->selectedSensor);
-        $this->emit('sensorDataUpdated', $chartData, $this->zValarm, $this->zVwarn, $this->zVbase, $this->latestZvel, $this->zVelTime);
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+        $this->emit('sensorDataUpdated', $chartData,$this->zValarm ,$this->zVwarn, $this->zVbase, $this->latestZvel, $this->zVelTime);
     }
     public function render()
     {
-        $chartData = $this->sensor($this->selectedSensor);
+        $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         return view('livewire.z-vel', [
             'data' => $chartData,
             'sensorNames' => $this->sensorNames,
