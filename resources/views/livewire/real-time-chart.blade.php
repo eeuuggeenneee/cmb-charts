@@ -270,35 +270,70 @@
                     maintainAspectRatio: false,
                     scales: {
                         xAxes: [{
-                            type: 'linear', // Change type to 'linear' for numeric x-axis
-                            position: 'bottom',
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'D',
+                                },
+                            },
                             title: {
                                 display: true,
                                 text: 'Time',
                             },
                         }],
                         yAxes: [{
-                            id: 'y-axis-0',
+                            id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
                             title: {
                                 display: true,
                                 text: 'X Velocity',
                             },
-                            ticks: {},
+                            ticks: {
+                                // Adjust the y-axis scale properties if needed
+                            },
                         }],
                     },
-                }
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: <?php echo $tempalarm + 10; ?>, //here
+                                    yMax: <?php echo $tempalarm + 10; ?>, //here
+                                    borderWidth: 0,
+                                    borderColor: 'grey'
+                                },
+                                line2: {
+                                    type: 'line',
+                                    yMin: <?php echo $tempwarning; ?>, //here
+                                    yMax: <?php echo $tempwarning; ?>, //here
+                                    borderWidth: 2,
+                                    borderColor: 'blue'
+                                },
+                                line3: {
+                                    type: 'line',
+                                    yMin: <?php echo $tempalarm; ?>, //here
+                                    yMax: <?php echo $tempalarm; ?>, //here
+                                    borderWidth: 2,
+                                    borderColor: 'red'
+                                },
+                            }
+                        }
+                    },
+                },
+
             };
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
-            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime,latestTemp,olddata) {
+            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime, latestTemp, olddata) {
                 console.log("Updated Selected Sensor: " + selectedSensorValue);
 
-   
+
                 const fromlivewire = {
-                            x: tempTime,
-                            y: latestTemp,
-                        };
-  
+                    x: tempTime,
+                    y: latestTemp,
+                };
+
                 initialDataFromBackend = fromlivewire;
                 console.log(initialDataFromBackend);
                 fetchDataAndAddToChart();
@@ -310,7 +345,7 @@
                 }));
 
 
-                
+
                 const updatedData = {
                     labels: updatedChartData.map(item => item.x),
                     datasets: [{
@@ -324,36 +359,64 @@
                     type: 'line',
                     data: updatedData,
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            xAxes: [{
-                                type: 'linear',
-                                position: 'bottom',
-                                title: {
-                                    display: true,
-                                    text: 'Time',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'D',
                                 },
-                            }],
-                            yAxes: [{
-                                id: 'y-axis-0',
-                                title: {
-                                    display: true,
-                                    text: 'X Velocity',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time',
+                            },
+                        }],
+                        yAxes: [{
+                            id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                            title: {
+                                display: true,
+                                text: 'X Velocity',
+                            },
+                            ticks: {
+                                // Adjust the y-axis scale properties if needed
+                            },
+                        }],
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: tempalarm+10, //here
+                                    yMax: tempalarm + 10, //here
+                                    borderWidth: 0,
+                                    borderColor: 'grey'
                                 },
-                                ticks: {},
-                            }],
-                        },
-                    }
+                                line2: {
+                                    type: 'line',
+                                    yMin: tempwarning, //here
+                                    yMax: tempwarning, //here
+                                    borderWidth: 2,
+                                    borderColor: 'blue'
+                                },
+                                line3: {
+                                    type: 'line',
+                                    yMin: tempalarm, //here
+                                    yMax: tempalarm, //here
+                                    borderWidth: 2,
+                                    borderColor: 'red'
+                                },
+                            }
+                        }
+                    },
+                },
+
                 });
             });
-
-            if (selectedSensorValue == "") {
-                selectedSensorValue = 0;
-                console.log(selectedSensorValue);
-            } else {
-                console.log(selectedSensorValue);
-            }
 
             function addData(chart, newData) {
                 chart.data.labels.push(newData.x);

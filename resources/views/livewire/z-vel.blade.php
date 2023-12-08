@@ -19,39 +19,41 @@
                 <div class="card-header">
                     Select
                 </div>
-          
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="machineSelect">Select Machine:</label>
-                            <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
-                                <option value="machine1">200A</option>
-                                <option value="machine2">200B</option>
-                                <option value="machine3">200C</option>
-                                <option value="machine4">200D</option>
-                                <option value="machine5">90+</option>
-                            </select>
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="sensorSelect">Select Sensor:</label>
-                            <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
-                                wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
-                            </select>
-                        </div>
 
-                        <div style="border-top: 1px solid black; margin: 10px 0;">
-                            <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
-                            <div class="form-group">
-                                <input type="date" wire:ignore class="form-control" id="startDate" wire:model="start_date" wire:change="dateRangeChanged">
-                            </div>
-                            <h6 class="text-center">TO</h6>
-                            <div class="form-group">
-                                <input type="date"  wire:ignore class="form-control" id="endDate" wire:model="end_date" wire:change="dateRangeChanged">
-                            </div>
-                        </div>
-                        
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="machineSelect">Select Machine:</label>
+                        <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
+                            <option value="machine1">200A</option>
+                            <option value="machine2">200B</option>
+                            <option value="machine3">200C</option>
+                            <option value="machine4">200D</option>
+                            <option value="machine5">90+</option>
+                        </select>
                     </div>
-              
+
+                    <div class="form-group">
+                        <label for="sensorSelect">Select Sensor:</label>
+                        <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
+                            wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
+                        </select>
+                    </div>
+
+                    <div style="border-top: 1px solid black; margin: 10px 0;">
+                        <label for="sensorSelect" class="text-center mt-3">Filter Date</label>
+                        <div class="form-group">
+                            <input type="date" wire:ignore class="form-control" id="startDate"
+                                wire:model="start_date" wire:change="dateRangeChanged">
+                        </div>
+                        <h6 class="text-center">TO</h6>
+                        <div class="form-group">
+                            <input type="date" wire:ignore class="form-control" id="endDate" wire:model="end_date"
+                                wire:change="dateRangeChanged">
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
 
             <div class="card mb-3">
