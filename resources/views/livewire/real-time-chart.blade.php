@@ -1,7 +1,4 @@
 <div>
-
-
-    <h1 class="text-center mb-3">Temperature</h1>
     <div class="row">
         <div class="col-xl-4 col-sm-12">
             <div class="card mb-3">
@@ -25,6 +22,15 @@
                     <strong>Filter</strong>
                 </div>
                 <div class="card-body">
+
+                    <div class="form-group">
+                        <label for="">Select Building:</label>
+                        <select class="form-control">
+                            <option value="" selected>MF Building</option>
+                            <option value="" disabled>LF Building</option>
+
+                        </select>
+                    </div>
 
                     <div class="form-group">
                         <label for="machineSelect">Select Machine:</label>
@@ -54,28 +60,41 @@
                             <input type="date" wire:ignore class="form-control" id="endDate" wire:model="end_date"
                                 wire:change="dateRangeChanged">
                         </div>
+
+                        <p class="text-center mt-3">Time: <span id="demo"></span></p>
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="24" step="0.5" value="12"
+                                class="slider form-control" id="myRange">
+                        </div>
+
+
                     </div>
                     <h1></h1>
                 </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    <strong>Legends</strong>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Temperature Alarm: <strong
-                            style="color: red;">{{ $tempalarm }}°</strong></li>
-                    <li class="list-group-item">Temperature Warning: <strong
-                            style="color: blue;">{{ $tempwarning }}°</strong></li>
-                </ul>
-            </div>
         </div>
         <div class="col-xl-8 col-sm-12">
             <div class="card">
-                <div class="card-header">
-                    Temperature
+                <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
+
+                    <span style="text-align: left;">Temperature</span>
+
+                    <div style="display: flex; align-items: center;">
+                        <div class="line" style="height: 2px; background-color: blue; margin: 0 10px; width: 50px;">
+                        </div>
+                        <span style="margin-right: 10px;">Warning</span>
+                        <div class="line" style="height: 2px; background-color: red; margin: 0 10px; width: 50px;">
+                        </div>
+                        <span>Alarm</span>
+                    </div>
+
                 </div>
+
+
+
+
+
                 <div class="card-body">
                     <canvas id="myChart" width="500" height="600"></canvas>
                 </div>
@@ -84,6 +103,22 @@
         </div>
     </div>
     <script>
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("demo");
+
+        // Function to convert decimal value to time format (hh:mm)
+        function convertToTime(decimalValue) {
+            var hours = Math.floor(decimalValue);
+            var minutes = Math.round((decimalValue - hours) * 60);
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            return hours + ":" + minutes;
+        }
+
+        output.innerHTML = convertToTime(slider.value);
+
+        slider.oninput = function() {
+            output.innerHTML = convertToTime(this.value);
+        }
         const sensorOptions = {
             machine1: [{
                     value: 100,
@@ -255,11 +290,14 @@
             }));
             const data = {
                 labels: chartData.map(item => item.x),
+
                 datasets: [{
                     label: 'Sensor',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 2,
                     data: chartData.map(item => item.y),
+                    pointRadius: 1,
                 }]
             };
             const config = {
@@ -278,12 +316,12 @@
                                 },
                             },
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Time',
                             },
                         }],
                         yAxes: [{
-                            id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                            id: 'y-axis-0',
                             title: {
                                 display: true,
                                 text: 'X Velocity',
@@ -292,37 +330,42 @@
                                 // Adjust the y-axis scale properties if needed
                             },
                         }],
+                        legend: {
+                            display: false, // This line removes the legend
+                        },
                     },
                     plugins: {
                         annotation: {
                             annotations: {
                                 line1: {
                                     type: 'line',
-                                    yMin: <?php echo $tempalarm + 10; ?>, //here
-                                    yMax: <?php echo $tempalarm + 10; ?>, //here
+                                    yMin: <?php echo $tempalarm + 10; ?>,
+                                    yMax: <?php echo $tempalarm + 10; ?>,
                                     borderWidth: 0,
                                     borderColor: 'grey'
                                 },
                                 line2: {
                                     type: 'line',
-                                    yMin: <?php echo $tempwarning; ?>, //here
-                                    yMax: <?php echo $tempwarning; ?>, //here
+                                    yMin: <?php echo $tempwarning; ?>,
+                                    yMax: <?php echo $tempwarning; ?>,
                                     borderWidth: 2,
                                     borderColor: 'blue'
                                 },
                                 line3: {
                                     type: 'line',
-                                    yMin: <?php echo $tempalarm; ?>, //here
-                                    yMax: <?php echo $tempalarm; ?>, //here
+                                    yMin: <?php echo $tempalarm; ?>,
+                                    yMax: <?php echo $tempalarm; ?>,
                                     borderWidth: 2,
                                     borderColor: 'red'
                                 },
                             }
-                        }
+                        },
                     },
-                },
 
+
+                },
             };
+
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
             Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime, latestTemp, olddata) {
@@ -359,61 +402,61 @@
                     type: 'line',
                     data: updatedData,
                     options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        xAxes: [{
-                            type: 'time',
-                            time: {
-                                unit: 'day',
-                                displayFormats: {
-                                    day: 'D',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: 'day',
+                                    displayFormats: {
+                                        day: 'D',
+                                    },
                                 },
-                            },
-                            title: {
-                                display: true,
-                                text: 'Time',
-                            },
-                        }],
-                        yAxes: [{
-                            id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
-                            title: {
-                                display: true,
-                                text: 'X Velocity',
-                            },
-                            ticks: {
-                                // Adjust the y-axis scale properties if needed
-                            },
-                        }],
-                    },
-                    plugins: {
-                        annotation: {
-                            annotations: {
-                                line1: {
-                                    type: 'line',
-                                    yMin: tempalarm+10, //here
-                                    yMax: tempalarm + 10, //here
-                                    borderWidth: 0,
-                                    borderColor: 'grey'
+                                title: {
+                                    display: true,
+                                    text: 'Time',
                                 },
-                                line2: {
-                                    type: 'line',
-                                    yMin: tempwarning, //here
-                                    yMax: tempwarning, //here
-                                    borderWidth: 2,
-                                    borderColor: 'blue'
+                            }],
+                            yAxes: [{
+                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                                title: {
+                                    display: true,
+                                    text: 'X Velocity',
                                 },
-                                line3: {
-                                    type: 'line',
-                                    yMin: tempalarm, //here
-                                    yMax: tempalarm, //here
-                                    borderWidth: 2,
-                                    borderColor: 'red'
+                                ticks: {
+                                    // Adjust the y-axis scale properties if needed
                                 },
+                            }],
+                        },
+                        plugins: {
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        yMin: tempalarm + 10, //here
+                                        yMax: tempalarm + 10, //here
+                                        borderWidth: 0,
+                                        borderColor: 'grey'
+                                    },
+                                    line2: {
+                                        type: 'line',
+                                        yMin: tempwarning, //here
+                                        yMax: tempwarning, //here
+                                        borderWidth: 2,
+                                        borderColor: 'blue'
+                                    },
+                                    line3: {
+                                        type: 'line',
+                                        yMin: tempalarm, //here
+                                        yMax: tempalarm, //here
+                                        borderWidth: 2,
+                                        borderColor: 'red'
+                                    },
+                                }
                             }
-                        }
+                        },
                     },
-                },
 
                 });
             });
