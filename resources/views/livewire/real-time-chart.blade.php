@@ -32,6 +32,7 @@
                         </select>
                     </div>
 
+                    
                     <div class="form-group">
                         <label for="machineSelect">Select Machine:</label>
                         <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
@@ -43,10 +44,10 @@
                         </select>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <label for="sensorSelect">Select Sensor:</label>
-                        <select class="form-control" id="sensorSelect" wire:model="selectedSensor"
-                            wire:change="selectedSensor" wire:ignore>
+                        <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
+                            wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
                         </select>
                     </div>
                     <div style="border-top: 1px solid black; margin: 10px 0;">
@@ -63,7 +64,7 @@
 
                         <p class="text-center mt-3">Time: <span id="demo"></span></p>
                         <div class="slidecontainer">
-                            <input type="range" min="0" max="24" step="0.5" value="12"
+                            <input type="range" min="0" max="24" step="0.1" value="12"
                                 class="slider form-control" id="myRange">
                         </div>
 
@@ -205,11 +206,11 @@
                 },
                 {
                     value: 17,
-                    label: "200C E-DE"
+                    label: "200D E-DE"
                 },
                 {
                     value: 18,
-                    label: "200C E-NDE"
+                    label: "200D E-NDE"
                 },
             ],
             machine5: [{
@@ -236,12 +237,14 @@
                 },
             ],
         };
-        var selectedSensorValue = 0;
-        const selectedMachine = document.getElementById("machineSelect").value;
-        const sensorSelect = document.getElementById("sensorSelect");
+  
 
+        var selectedSensorValue = document.getElementById("sensorSelect").value;
 
-
+        if(selectedSensorValue == ""){
+            selectedSensorValue = 0;
+        }
+        
 
         function updateSelectedSensorValue() {
             selectedSensorValue = document.getElementById("sensorSelect").value;
@@ -249,11 +252,18 @@
         }
         sensorSelect.addEventListener("change", updateSelectedSensorValue);
 
+      
         var oldData = @json($olddata);
 
 
         function updateSensorOptions() {
+            const selectedMachine = document.getElementById("machineSelect").value;
+            const sensorSelect = document.getElementById("sensorSelect");
+
+            // Clear existing options
             sensorSelect.innerHTML = "";
+
+            // If a machine is selected, show the sensor options
             if (selectedMachine !== "") {
                 const sensorOptionsList = sensorOptions[selectedMachine];
                 sensorOptionsList.forEach(sensor => {
@@ -276,10 +286,18 @@
             }
         }
 
+        
+        function displaySensorValue() {
+            const selectedSensorValue = document.getElementById("sensorSelect").value;
 
-
-
+            if (selectedSensorValue !== "") {
+                console.log("Selected Sensor Value: " + selectedSensorValue);
+            }
+        }
         updateSensorOptions();
+
+
+
 
         document.addEventListener('livewire:load', function() {
             var data2 = @json($data);
