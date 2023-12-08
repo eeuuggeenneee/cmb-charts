@@ -4,7 +4,8 @@
             <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
                     <h4 class="mb-0 me-3">Latest Data</h4>
-                    <span class="display-4 ms-auto" style="font-size: 1rem;"><strong>{{ $tempTime }}</strong></span>
+                    <span class="display-4 ms-auto" style="font-size: 1rem;"><strong><span
+                                id="latesttemp"></span></strong></span>
                 </div>
 
 
@@ -12,7 +13,7 @@
                     <li class="list-group-item text-center">
 
                         <i class="fa-solid fa-3x mr-3 fa-temperature-empty"></i>
-                        <span class="display-4"><strong>{{ $latestTemp }}c</strong></span>
+                        <span class="display-4"><strong><span id="latestdegree"></span>c</strong></span>
                     </li>
                 </ul>
             </div>
@@ -32,7 +33,7 @@
                         </select>
                     </div>
 
-                    
+
                     <div class="form-group">
                         <label for="machineSelect">Select Machine:</label>
                         <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
@@ -62,10 +63,10 @@
                                 wire:change="dateRangeChanged">
                         </div>
 
-                        <p class="text-center mt-3">Time: <span id="demo"></span></p>
+                        <p class="text-center mt-3">Time: <span id="demo">{{ $slider_value }}</span></p>
                         <div class="slidecontainer">
-                            <input type="range" min="0" max="24" step="0.1" value="12"
-                                class="slider form-control" id="myRange">
+                            <input type="range" wire:ignore min="0" max="24" step="0.1"
+                                value="12" class="slider form-control" id="myRange" wire:model="slider_value">
                         </div>
 
 
@@ -104,22 +105,6 @@
         </div>
     </div>
     <script>
-        var slider = document.getElementById("myRange");
-        var output = document.getElementById("demo");
-
-        // Function to convert decimal value to time format (hh:mm)
-        function convertToTime(decimalValue) {
-            var hours = Math.floor(decimalValue);
-            var minutes = Math.round((decimalValue - hours) * 60);
-            minutes = (minutes < 10) ? "0" + minutes : minutes;
-            return hours + ":" + minutes;
-        }
-
-        output.innerHTML = convertToTime(slider.value);
-
-        slider.oninput = function() {
-            output.innerHTML = convertToTime(this.value);
-        }
         const sensorOptions = {
             machine1: [{
                     value: 100,
@@ -237,14 +222,14 @@
                 },
             ],
         };
-  
+
 
         var selectedSensorValue = document.getElementById("sensorSelect").value;
 
-        if(selectedSensorValue == ""){
+        if (selectedSensorValue == "") {
             selectedSensorValue = 0;
         }
-        
+
 
         function updateSelectedSensorValue() {
             selectedSensorValue = document.getElementById("sensorSelect").value;
@@ -252,7 +237,7 @@
         }
         sensorSelect.addEventListener("change", updateSelectedSensorValue);
 
-      
+
         var oldData = @json($olddata);
 
 
@@ -286,7 +271,7 @@
             }
         }
 
-        
+
         function displaySensorValue() {
             const selectedSensorValue = document.getElementById("sensorSelect").value;
 
@@ -300,7 +285,43 @@
 
 
         document.addEventListener('livewire:load', function() {
+            var slider = document.getElementById("myRange");
+            var output = document.getElementById("demo");
+
+            function convertToTime(decimalValue) {
+                var hours = Math.floor(decimalValue);
+                var minutes = Math.round((decimalValue - hours) * 60);
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                return hours + ":" + minutes + ":00";
+            }
+
+
+            output.innerHTML = convertToTime(slider.value);
+
+
+            Livewire.on('dateTimeUpdated', function(dateTime) {
+                console.log(dateTime);
+            });
+
+
+            slider.addEventListener('input', function() {
+                output.innerHTML = convertToTime(this.value);
+
+                Livewire.emit('sliderValueChanged', convertToTime(this.value));
+            });
+
+
+
+
+
+
+
+
+
+
             var data2 = @json($data);
+
+
             const canvas = document.getElementById('myChart');
             const chartData = data2.map(item => ({
                 x: item.x,
@@ -345,11 +366,11 @@
                                 text: 'X Velocity',
                             },
                             ticks: {
-                                // Adjust the y-axis scale properties if needed
+
                             },
                         }],
                         legend: {
-                            display: false, // This line removes the legend
+                            display: false,
                         },
                     },
                     plugins: {
@@ -387,17 +408,27 @@
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
             Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime, latestTemp, olddata) {
-                console.log("Updated Selected Sensor: " + selectedSensorValue);
 
-
+                
+                var currentDate = new Date();
+                var formattedDate = currentDate.toLocaleString('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: '2-digit',
+               
+                });
+                formattedDate = formattedDate.replace(',', '');
                 const fromlivewire = {
                     x: tempTime,
                     y: latestTemp,
                 };
 
-                initialDataFromBackend = fromlivewire;
-                console.log(initialDataFromBackend);
-                fetchDataAndAddToChart();
+                if(formattedDate == tempTime){
+                    initialDataFromBackend = fromlivewire;
+                }else{
+
+                }
+
                 myChart.destroy();
 
                 const updatedChartData = data.map(item => ({
@@ -437,13 +468,13 @@
                                 },
                             }],
                             yAxes: [{
-                                id: 'y-axis-0', // use 'y-axis-0' for the first y-axis
+                                id: 'y-axis-0',
                                 title: {
                                     display: true,
                                     text: 'X Velocity',
                                 },
                                 ticks: {
-                                    // Adjust the y-axis scale properties if needed
+
                                 },
                             }],
                         },
@@ -502,8 +533,11 @@
                             y: parseFloat(data[0].y),
                         };
                         if (arraysEqual(initialDataFromBackend, reconstructedData)) {
-                            console.log("No new data");
+                            latesttemp.innerHTML = data[0].x;
+                            latestdegree.innerHTML = data[0].y;
                         } else {
+                            latesttemp.innerHTML = data[0].x;
+                            latestdegree.innerHTML = data[0].y;
                             console.log("New data", reconstructedData);
                             initialDataFromBackend = reconstructedData;
                             addData(myChart, reconstructedData);
@@ -512,8 +546,7 @@
                     .catch(error => console.error('Error fetching data:', error));
             }
             fetchDataAndAddToChart();
-
-            setInterval(fetchDataAndAddToChart, 1000);
+            setInterval(fetchDataAndAddToChart, 5000);
 
         });
     </script>
