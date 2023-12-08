@@ -77,7 +77,7 @@
                     Temperature
                 </div>
                 <div class="card-body">
-                    <canvas id="lineChart" width="500" height="600"></canvas>
+                    <canvas id="myChart" width="500" height="600"></canvas>
                 </div>
             </div>
 
@@ -205,30 +205,11 @@
         const sensorSelect = document.getElementById("sensorSelect");
         var selectedSensorValue = document.getElementById("sensorSelect").value;
 
-        if (selectedSensorValue == "") {
-            selectedSensorValue = 0;
-
-        } else {
-            console.log(selectedSensorValue);
-        }
 
 
-        async function fetchDataAndUpdateChart(chart) {
-            try {
-                var response = await fetch('http://127.0.0.1:8000/api/sensor-data/' + selectedSensorValue);
-                var jsonData = await response.json();
 
-                var newData = jsonData.map(entry => ({
-                    x: new Date(entry.x),
-                    y: entry.y
-                }));
 
-                updateChart(chart, newData, <?php echo $tempalarm; ?>, <?php echo $tempwarning; ?>);
-
-            } catch (error) {
-
-            }
-        }
+        var oldData = @json($olddata);
 
 
         function updateSensorOptions() {
@@ -261,91 +242,96 @@
         updateSensorOptions();
 
         document.addEventListener('livewire:load', function() {
-            var ctx = document.getElementById('lineChart').getContext('2d');
-            var chart;
-            var data5 = @json($data);
-            updateChart(data5, <?php echo $tempalarm; ?>, <?php echo $tempwarning; ?>);
-
-            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, latestTemp, ) {
-                updateChart(data, tempalarm, tempwarning);
-            });
-            function updateChart(data, tempalarm, tempwarning) {
-                if (chart) {
-                    chart.destroy();
-                }
-
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'Sensor',
-                            data: data,
-                            borderColor: 'rgb(75, 192, 192)',
-                            borderWidth: 2,
-                            fill: false,
-                            pointRadius: 0,
+            var data2 = @json($data);
+            const canvas = document.getElementById('myChart');
+            const chartData = data2.map(item => ({
+                x: item.x,
+                y: item.y
+            }));
+            const data = {
+                labels: chartData.map(item => item.x),
+                datasets: [{
+                    label: 'Sensor',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: chartData.map(item => item.y),
+                }]
+            };
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        xAxes: [{
+                            type: 'linear', // Change type to 'linear' for numeric x-axis
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Time',
+                            },
+                        }],
+                        yAxes: [{
+                            id: 'y-axis-0',
+                            title: {
+                                display: true,
+                                text: 'X Velocity',
+                            },
+                            ticks: {},
                         }],
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            xAxes: [{
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    displayFormats: {
-                                        day: 'D',
-                                    },
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Time',
-                                },
-                            }],
-                            yAxes: [{
-                                id: 'y-axis-0',
-                                title: {
-                                    display: true,
-                                    text: 'Temperature',
-                                },
-                                ticks: {},
-                            }],
-                        },
-                        plugins: {
-                            annotation: {
-                                annotations: {
-                                    line1: {
-                                        type: 'line',
-                                        yMin: tempalarm,
-                                        yMax: tempalarm,
-                                        borderWidth: 2,
-                                        borderColor: 'red'
-                                    },
-                                    line2: {
-                                        type: 'line',
-                                        yMin: tempwarning,
-                                        yMax: tempwarning,
-                                        borderWidth: 2,
-                                        borderColor: 'blue'
-                                    },
-                                    line4: {
-                                        type: 'line',
-                                        yMin: tempalarm + 10,
-                                        yMax: tempalarm + 10,
-                                        borderWidth: 0,
-                                        borderColor: 'pink'
-                                    },
-                                }
-                            }
-                        },
-                    },
+                }
+            };
+            var myChart = new Chart(canvas, config);
+            let selectedSensorValue = "";
 
-                });
+            if (selectedSensorValue === "") {
+                selectedSensorValue = 0;
+            } else {
+                console.log(selectedSensorValue);
+            }
+
+            function addData(chart, newData) {
+                chart.data.labels.push(newData.x);
+                chart.data.datasets[0].data.push(newData.y);
                 chart.update();
             }
 
-           
+            var initialDataFromBackend = @json($olddata);
+
+            console.log(initialDataFromBackend);
+
+            let isFirstLoad = true;
+
+
+            function arraysEqual(arr1, arr2) {
+                return JSON.stringify(arr1) === JSON.stringify(arr2);
+            }
+
+
+
+            function fetchDataAndAddToChart() {
+                fetch('http://127.0.0.1:8000/api/sensor-data/' + selectedSensorValue)
+                    .then(response => response.json())
+                    .then(data => {
+                        const reconstructedData = {
+                            x: data[0].x,
+                            y: parseFloat(data[0].y),
+                        };
+                        if (arraysEqual(initialDataFromBackend, reconstructedData)) {
+                            console.log("No new data");
+                        } else {
+                            console.log("New data", reconstructedData);
+                            initialDataFromBackend = reconstructedData;
+                            addData(myChart, reconstructedData);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+            fetchDataAndAddToChart();
+
+            setInterval(fetchDataAndAddToChart, 1000);
 
         });
     </script>

@@ -15,7 +15,7 @@ class RealTimeChart extends Component
     public $apiData;
     public $selectedMachine;
     public $selectedSensor = 0;
- 
+    public $olddata = [];
     public $sensorData;
     public $machineData;
     public $sensorNames;
@@ -58,10 +58,10 @@ class RealTimeChart extends Component
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         if (empty($this->start_date)) {
-            $this->start_date = now()->firstOfMonth()->toDateString();
+            $this->start_date =  now()->toDateString();
         }
         if (empty($this->end_date)) {
-            $this->end_date = now()->addDay()->toDateString();
+            $this->end_date = now()->addDay(2)->toDateString();
         }
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
@@ -94,7 +94,6 @@ class RealTimeChart extends Component
                     $timestamp = Carbon::parse($dataPoint['timestamp']);
                         $temp = $dataPoint['temp'];
                        
-                  
                 }
                 $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
             }
@@ -105,7 +104,9 @@ class RealTimeChart extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date . '&end_date=' . $end_date);
+        // $start_date = $start_date . "00:00:00";
+        // $end_date = $end_date . "12:00:00";
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date .' 00:00:00&end_date='. $end_date .' 00:00:00');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -121,11 +122,12 @@ class RealTimeChart extends Component
                 }
                 $this->tempalarm = $dataPoint['temp-alarm'];
                 $this->tempwarning = $dataPoint['temp-warning'];
-
+                $this->olddata = ['x' => $timestamp->format('M d y H:i'), 'y' => $temp];
                 $this->latestTemp = $dataPoint['temp'];
                 $this->tempTime = $timestamp->format('M d y H:i');
             }
         }
+ 
         return $chartData;
     }
     public function selectedSensor()
@@ -137,11 +139,13 @@ class RealTimeChart extends Component
 
     public function render()
     {
+        
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
 
 
         return view('livewire.real-time-chart', [
             'data' => $chartData,
+            'olddata' => $this->olddata,
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,
         ]);
