@@ -132,7 +132,9 @@ class RealTimeChart extends Component
     }
     public function selectedSensor()
     {
+
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
+
         $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);
     }
 

@@ -201,13 +201,18 @@
                 },
             ],
         };
+        var selectedSensorValue = 0;
         const selectedMachine = document.getElementById("machineSelect").value;
         const sensorSelect = document.getElementById("sensorSelect");
-        var selectedSensorValue = document.getElementById("sensorSelect").value;
 
 
 
 
+        function updateSelectedSensorValue() {
+            selectedSensorValue = document.getElementById("sensorSelect").value;
+            console.log("Selected Sensor: " + selectedSensorValue);
+        }
+        sensorSelect.addEventListener("change", updateSelectedSensorValue);
 
         var oldData = @json($olddata);
 
@@ -284,10 +289,68 @@
                 }
             };
             var myChart = new Chart(canvas, config);
-            let selectedSensorValue = "";
+            var initialDataFromBackend = @json($olddata);
+            Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime,latestTemp,olddata) {
+                console.log("Updated Selected Sensor: " + selectedSensorValue);
 
-            if (selectedSensorValue === "") {
+   
+                const fromlivewire = {
+                            x: tempTime,
+                            y: latestTemp,
+                        };
+  
+                initialDataFromBackend = fromlivewire;
+                console.log(initialDataFromBackend);
+                fetchDataAndAddToChart();
+                myChart.destroy();
+
+                const updatedChartData = data.map(item => ({
+                    x: item.x,
+                    y: item.y
+                }));
+
+
+                
+                const updatedData = {
+                    labels: updatedChartData.map(item => item.x),
+                    datasets: [{
+                        label: 'Sensor',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: updatedChartData.map(item => item.y),
+                    }]
+                };
+                myChart = new Chart(canvas, {
+                    type: 'line',
+                    data: updatedData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                type: 'linear',
+                                position: 'bottom',
+                                title: {
+                                    display: true,
+                                    text: 'Time',
+                                },
+                            }],
+                            yAxes: [{
+                                id: 'y-axis-0',
+                                title: {
+                                    display: true,
+                                    text: 'X Velocity',
+                                },
+                                ticks: {},
+                            }],
+                        },
+                    }
+                });
+            });
+
+            if (selectedSensorValue == "") {
                 selectedSensorValue = 0;
+                console.log(selectedSensorValue);
             } else {
                 console.log(selectedSensorValue);
             }
@@ -298,10 +361,6 @@
                 chart.update();
             }
 
-            var initialDataFromBackend = @json($olddata);
-
-            console.log(initialDataFromBackend);
-
             let isFirstLoad = true;
 
 
@@ -309,9 +368,8 @@
                 return JSON.stringify(arr1) === JSON.stringify(arr2);
             }
 
-
-
             function fetchDataAndAddToChart() {
+                console.log("Selected Sensor " + selectedSensorValue);
                 fetch('http://127.0.0.1:8000/api/sensor-data/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
