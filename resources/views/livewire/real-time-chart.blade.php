@@ -12,7 +12,8 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-center">
 
-                        <i class="fa-solid fa-3x mr-3 fa-temperature-empty"></i>
+                        <i class="fa-solid fa-3x mr-3 fa-temperature-empty blink-green" id="blinkingIcon"></i>
+
                         <span class="display-4"><strong><span id="latestdegree"></span>c</strong></span>
                     </li>
                 </ul>
@@ -547,7 +548,23 @@
                     .catch(error => console.error('Error fetching data:', error));
             }
             fetchDataAndAddToChart();
-            setInterval(fetchDataAndAddToChart, 5000);
+            setInterval(fetchDataAndAddToChart, 1000);
+
+            var blinkingIcon = document.getElementById('blinkingIcon');
+
+            var isHidden = false;
+            setInterval(function() {
+                isHidden = !isHidden;
+             
+            
+                if(parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempwarning; ?>)){
+                    blinkingIcon.style.color = isHidden ? 'transparent' : 'blue';
+                }else{
+                    blinkingIcon.style.color = isHidden ? 'transparent' : 'green';
+                }
+                
+            }, 1000); // Change the blinking speed by adjusting the interval (500 milliseconds in this case)
+
 
         });
     </script>

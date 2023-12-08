@@ -67,6 +67,7 @@ class RealTimeChart extends Component
         if (empty($this->end_date)) {
             $this->end_date = now()->addDay(2)->toDateString();
         }
+
         $this->slider_value = "00:00:00";
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->tempalarm, $this->tempwarning, $this->tempTime, $this->latestTemp);

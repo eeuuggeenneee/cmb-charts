@@ -1,5 +1,4 @@
 <div>
-    <h1 class="text-center mb-3">Z Velocity</h1>
     <div class="row">
         <div class="col-xl-4 col-sm-12">
             <div class="card mb-3">

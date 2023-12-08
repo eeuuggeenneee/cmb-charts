@@ -1,5 +1,5 @@
 <div>
-    <h1 class="text-center mb-3">X Velocity</h1>
+  
     <div class="row">
         <div class="col-xl-4 col-sm-12">
             <div class="col-sm-12">
@@ -94,7 +94,7 @@
             var ctx = document.getElementById('lineChart').getContext('2d');
             var chart;
             var data5 = @json($data);
-            updateChart(data5, xValarm, xVwarn, xVbase)
+            updateChart(data5, {{ $xValarm }}, {{ $xVwarn }}, {{ $xVbase }})
 
             Livewire.on('sensorDataUpdated', function(data, xValarm, xVwarn, xVbase) {
                 if (chart) {

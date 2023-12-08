@@ -86,7 +86,7 @@ class ZAcc extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date . '&end_date=' . $end_date);
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date .' 00:00:00&end_date='. $end_date .' 00:00:00');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {

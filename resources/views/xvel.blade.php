@@ -24,7 +24,7 @@
 
     @include('header.header')
 
-    <div class="px-5 py-5">
+    <div class="px-2 py-2">
         @livewire('x-vel') 
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js"></script>
