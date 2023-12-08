@@ -559,12 +559,13 @@
             
                 if(parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempwarning; ?>)){
                     blinkingIcon.style.color = isHidden ? 'transparent' : 'blue';
+                }else if(parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempalarm; ?>)){
+                    blinkingIcon.style.color = isHidden ? 'transparent' : 'red';
                 }else{
                     blinkingIcon.style.color = isHidden ? 'transparent' : 'green';
                 }
                 
-            }, 1000); // Change the blinking speed by adjusting the interval (500 milliseconds in this case)
-
+            }, 1000);
 
         });
     </script>
