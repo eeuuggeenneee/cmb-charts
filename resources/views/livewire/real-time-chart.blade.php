@@ -66,7 +66,7 @@
                         <p class="text-center mt-3">Time: <span id="demo">{{ $slider_value }}</span></p>
                         <div class="slidecontainer">
                             <input type="range" wire:ignore min="0" max="24" step="0.1"
-                                value="12" class="slider form-control" id="myRange" wire:model="slider_value">
+                                value="{{ Str::limit($slider_value, 2, '') }}" class="slider form-control" id="myRange" wire:model="slider_value">
                         </div>
 
 
@@ -98,7 +98,7 @@
 
 
                 <div class="card-body">
-                    <canvas id="myChart" width="500" height="600"></canvas>
+                    <canvas id="myChart" width="500" height="600" wire:ignore></canvas>
                 </div>
             </div>
 
@@ -445,6 +445,7 @@
                         backgroundColor: 'rgb(255, 99, 132)',
                         borderColor: 'rgb(255, 99, 132)',
                         data: updatedChartData.map(item => item.y),
+                        pointRadius: 1,
                     }]
                 };
                 myChart = new Chart(canvas, {
