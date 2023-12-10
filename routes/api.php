@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\RealTimeChart;
+use App\Http\Livewire\XAcc;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,4 +18,5 @@ use App\Http\Livewire\RealTimeChart;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/sensor-data/{sensor}', [RealTimeChart::class, 'getSensorData']);
+Route::get('/sensor-data/temp/{sensor}', [RealTimeChart::class, 'getSensorData']);
+Route::get('/sensor-data/x-acc/{sensor}', [XAcc::class, 'getSensorData']);

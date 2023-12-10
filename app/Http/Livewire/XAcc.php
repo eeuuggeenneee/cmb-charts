@@ -25,6 +25,10 @@ class XAcc extends Component
     public $xAccTime;
     public $start_date;
     public $end_date;
+    public $slider_value;
+    public $olddata;
+    protected $listeners = ['dateRangeChanged', 'sliderValueChanged'];
+
     public function mount()
     {
 
@@ -49,7 +53,7 @@ class XAcc extends Component
                 unset($sensor['machineID']);
                 return $sensor;
             })->toArray();
-
+            $this->slider_value = "00:00:00";
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         //dd($this->sensorData);
@@ -63,6 +67,32 @@ class XAcc extends Component
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData,$this->xAbase ,$this->xAalarm, $this->xAwarn, $this->xAccTime, $this->latestXacc);
     }
+
+    public function getSensorData($sensor)
+    {
+        $chartData = [];
+      
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $sensor);
+        $this->apiData = $response->json();
+        foreach ($this->apiData as $entry) {
+            if (isset($entry['sensors'][$sensor]['data'])) {
+                foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
+                    $timestamp = Carbon::parse($dataPoint['timestamp']);
+                        $xacc = $dataPoint['x-acc'];
+                       
+                }
+                $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xacc];
+            }
+        }
+        return $chartData;
+    }
+
+    public function sliderValueChanged($value)
+    {
+        $this->slider_value = $value;
+        $this->dateRangeChanged();
+    }
+    
     public function dateRangeChanged()
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
@@ -82,7 +112,10 @@ class XAcc extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date .' 00:00:00&end_date='. $end_date .' 00:00:00');
+      
+        $start_date = $start_date ." ". $this->slider_value;
+  
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date='.$start_date .'&end_date='. $end_date .' 00:00:00');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -102,10 +135,12 @@ class XAcc extends Component
                 $this->xAalarm = $dataPoint['x-acc-alarm'];
                 $this->xAwarn = $dataPoint['x-acc-warning'];
                 $this->xAbase = $dataPoint['x-acc-baseline'];
+                $this->olddata = ['x' => $timestamp->format('M d y H:i'), 'y' => $xacc];
                 $this->latestXacc = $dataPoint['x-acc'];
                 $this->xAccTime = $timestamp->format('M d y H:i');
             }
         }
+       //dd($chartData);
         return $chartData;
     }
     public function selectedSensor()
@@ -120,6 +155,7 @@ class XAcc extends Component
 
         return view('livewire.x-acc', [
             'data' => $chartData,
+            'olddata' => $this->olddata,
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,
         ]);

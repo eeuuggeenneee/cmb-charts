@@ -67,7 +67,8 @@
                         <p class="text-center mt-3">Time: <span id="demo">{{ $slider_value }}</span></p>
                         <div class="slidecontainer">
                             <input type="range" wire:ignore min="0" max="24" step="0.1"
-                                value="{{ Str::limit($slider_value, 2, '') }}" class="slider form-control" id="myRange" wire:model="slider_value">
+                                value="{{ Str::limit($slider_value, 2, '') }}" class="slider form-control"
+                                id="myRange" wire:model="slider_value">
                         </div>
 
 
@@ -410,13 +411,13 @@
             var initialDataFromBackend = @json($olddata);
             Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime, latestTemp, olddata) {
 
-                
+
                 var currentDate = new Date();
                 var formattedDate = currentDate.toLocaleString('en-US', {
                     month: 'short',
                     day: '2-digit',
                     year: '2-digit',
-               
+
                 });
                 formattedDate = formattedDate.replace(',', '');
                 const fromlivewire = {
@@ -424,9 +425,9 @@
                     y: latestTemp,
                 };
 
-                if(formattedDate == tempTime){
+                if (formattedDate == tempTime) {
                     initialDataFromBackend = fromlivewire;
-                }else{
+                } else {
 
                 }
 
@@ -527,7 +528,7 @@
 
             function fetchDataAndAddToChart() {
                 console.log("Selected Sensor " + selectedSensorValue);
-                fetch('http://127.0.0.1:8000/api/sensor-data/' + selectedSensorValue)
+                fetch('http://127.0.0.1:8000/api/sensor-data/temp/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {
@@ -555,16 +556,16 @@
             var isHidden = false;
             setInterval(function() {
                 isHidden = !isHidden;
-             
-            
-                if(parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempwarning; ?>)){
+
+
+                if (parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempwarning; ?>)) {
                     blinkingIcon.style.color = isHidden ? 'transparent' : 'blue';
-                }else if(parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempalarm; ?>)){
+                } else if (parseFloat(latestdegree.innerHTML) > parseFloat(<?php echo $tempalarm; ?>)) {
                     blinkingIcon.style.color = isHidden ? 'transparent' : 'red';
-                }else{
+                } else {
                     blinkingIcon.style.color = isHidden ? 'transparent' : 'green';
                 }
-                
+
             }, 1000);
 
         });

@@ -131,7 +131,7 @@ class RealTimeChart extends Component
                 $this->tempTime = $timestamp->format('M d y H:i');
             }
         }
- 
+      
         return $chartData;
     }
     public function selectedSensor()
