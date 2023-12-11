@@ -349,15 +349,6 @@
                 Livewire.emit('sliderValueChanged', convertToTime(this.value));
             });
 
-
-
-
-
-
-
-
-
-
             var data2 = @json($data);
 
 
