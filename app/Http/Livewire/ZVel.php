@@ -26,6 +26,11 @@ class ZVel extends Component
     public $receivedData;
     public $start_date;
     public $end_date;
+    public $slider_value;
+    public $olddata;
+
+    protected $listeners = ['dateRangeChanged', 'sliderValueChanged'];
+
     public function mount()
     {
  
@@ -60,11 +65,34 @@ class ZVel extends Component
         if (empty($this->end_date)) {
             $this->end_date = now()->addDay()->toDateString();
         }
+        $this->slider_value = "00:00:00";
 
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData,$this->zValarm ,$this->zVwarn, $this->zVbase, $this->latestZvel, $this->zVelTime);
     }
-
+    public function getSensorData($sensor)
+    {
+        $chartData = [];
+      
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $sensor);
+        $this->apiData = $response->json();
+        foreach ($this->apiData as $entry) {
+            if (isset($entry['sensors'][$sensor]['data'])) {
+                foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
+                    $timestamp = Carbon::parse($dataPoint['timestamp']);
+                        $zvel = $dataPoint['z-vel'];
+                       
+                }
+                $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $zvel];
+            }
+        }
+        return $chartData;
+    }
+    public function sliderValueChanged($value)
+    {
+        $this->slider_value = $value;
+        $this->dateRangeChanged();
+    }
     public function dateRangeChanged()
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
@@ -83,7 +111,9 @@ class ZVel extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date .' 00:00:00&end_date='. $end_date .' 00:00:00');
+        $start_date = $start_date ." ". $this->slider_value;
+
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date='.$start_date .'&end_date='. $end_date .' 00:00:00');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -105,6 +135,8 @@ class ZVel extends Component
                     $this->zVwarn = $dataPoint['z-vel-warning'];
                     $this->zVbase = $dataPoint['z-vel-baseline'];
                     $this->latestZvel = $dataPoint['z-vel'];
+                    $this->olddata = ['x' => $timestamp->format('M d y H:i'), 'y' => $zvel];
+
                     $this->zVelTime = $dataPoint['timestamp'];
 
                 }

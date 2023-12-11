@@ -29,7 +29,7 @@
                         <label for="">Select Building:</label>
                         <select class="form-control">
                             <option value="" selected>MF Building</option>
-                            <option value="" disabled>LF Building</option>
+                            <option value="" disabled>MCB Building</option>
 
                         </select>
                     </div>
@@ -333,7 +333,7 @@
                 labels: chartData.map(item => item.x),
 
                 datasets: [{
-                    label: 'Sensor',
+                    label: 'Raw Data',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
                     borderWidth: 2,

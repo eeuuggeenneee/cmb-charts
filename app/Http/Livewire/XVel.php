@@ -25,6 +25,11 @@ class XVel extends Component
     public $xVelTime;
     public $start_date;
     public $end_date;
+    public $slider_value;
+    public $olddata;
+
+    protected $listeners = ['dateRangeChanged', 'sliderValueChanged'];
+
     public function mount()
     {
 
@@ -59,14 +64,37 @@ class XVel extends Component
         if (empty($this->end_date)) {
             $this->end_date = now()->addDay()->toDateString();
         }
-   
+        $this->slider_value = "00:00:00";
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->xValarm, $this->xVwarn, $this->xVbase);
+    }
+    public function getSensorData($sensor)
+    {
+        $chartData = [];
+      
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $sensor);
+        $this->apiData = $response->json();
+        foreach ($this->apiData as $entry) {
+            if (isset($entry['sensors'][$sensor]['data'])) {
+                foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
+                    $timestamp = Carbon::parse($dataPoint['timestamp']);
+                        $xvel = $dataPoint['x-vel'];
+                       
+                }
+                $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
+            }
+        }
+        return $chartData;
     }
     public function dateRangeChanged()
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData,$this->xValarm ,$this->xVwarn, $this->xVbase, $this->latestXvel, $this->xVelTime);
+    }
+    public function sliderValueChanged($value)
+    {
+        $this->slider_value = $value;
+        $this->dateRangeChanged();
     }
     public function updated($propertyName)
     {
@@ -82,7 +110,9 @@ class XVel extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date .' 00:00:00&end_date='. $end_date .' 00:00:00');
+        $start_date = $start_date ." ". $this->slider_value;
+
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date='.$start_date .'&end_date='. $end_date .' 00:00:00');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -104,11 +134,13 @@ class XVel extends Component
                 $this->xVwarn = $dataPoint['x-vel-warning'];
                 $this->xVbase = $dataPoint['x-vel-baseline'];
                 $this->latestXvel = $dataPoint['x-vel'];
+                $this->olddata = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
+
                 $this->xVelTime = $timestamp->format('M d y H:i');
             }
         }
 
-
+   
         return $chartData;
     }
     public function selectedSensor()
