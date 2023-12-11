@@ -559,7 +559,7 @@
             function fetchDataAndAddToChart() {
                 console.log("Selected Sensor " + selectedSensorValue);
 
-                fetch('http://127.0.0.1:8000/api/sensor-data/temp/' + selectedSensorValue)
+                fetch('http://172.31.4.234:8000/api/sensor-data/temp/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

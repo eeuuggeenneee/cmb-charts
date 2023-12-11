@@ -38,7 +38,7 @@
                 </ul>
             </div>
 
-            <   <div class="card mb-2">
+              <div class="card mb-2">
                 <div class="card-header">
                     <strong>Filter</strong>
                 </div>
@@ -559,7 +559,7 @@
                 console.log("Selected Sensor " + selectedSensorValue);
                 var zveltime = document.getElementById("zveltime");
                 var latestzvel = document.getElementById("latestzvel");
-                fetch('http://127.0.0.1:8000/api/sensor-data/z-vel/' + selectedSensorValue)
+                fetch('http://172.31.4.234:8000/api/sensor-data/z-vel/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

@@ -561,7 +561,7 @@
                 console.log("Selected Sensor " + selectedSensorValue);
                 var xveltime = document.getElementById("xveltime");
                 var latestxvel = document.getElementById("latestxvel");
-                fetch('http://127.0.0.1:8000/api/sensor-data/x-vel/' + selectedSensorValue)
+                fetch('http://172.31.4.234:8000/api/sensor-data/x-vel/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

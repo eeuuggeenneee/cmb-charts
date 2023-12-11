@@ -9,10 +9,12 @@
                     <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
                         <p class="card-title">Z-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%" href="{{ route('xvel') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%"
+                        href="{{ route('xvel') }}">
                         <p class="card-title">X-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('xacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%"
+                        href="{{ route('xacc') }}">
                         <p class="card-title">X-Axis<br>Acceleration</p>
                     </a>
                     <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
@@ -561,7 +563,7 @@
             function fetchDataAndAddToChart() {
                 console.log("Selected Sensor " + selectedSensorValue);
 
-                fetch('http://127.0.0.1:8000/api/sensor-data/z-acc/' + selectedSensorValue)
+                fetch('http://172.31.4.234:8000/api/sensor-data/z-acc/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {
