@@ -3,24 +3,22 @@
         <div class="col-xl-4 col-sm-12">
             <div class="container">
                 <div class="row">
-                    <a class="btn btn-success mb-3" style="width: 15%;" href="{{ route('zvel') }}">
+                    <a class="btn btn-success mb-3" style="width: 15%; margin-right: 1%" href="{{ route('zvel') }}">
                         <p class="card-title">Z-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3" style="width: 22.5%;" href="{{ route('zacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
                         <p class="card-title">Z-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3" style="width: 15%;" href="{{ route('xvel') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%" href="{{ route('xvel') }}">
                         <p class="card-title">X-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3" style="width: 22.5%;" href="{{ route('xacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('xacc') }}">
                         <p class="card-title">X-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3" style="width: 25%;" href="{{ route('home') }}">
+                    <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
                         <p>Temperature</p>
                     </a>
                 </div>
-
-
             </div>
             <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
