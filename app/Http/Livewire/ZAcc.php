@@ -25,6 +25,11 @@ class ZAcc extends Component
     public $zAccTime;
     public $start_date;
     public $end_date;
+    public $slider_value;
+    public $olddata;
+
+    protected $listeners = ['dateRangeChanged', 'sliderValueChanged'];
+
     public function mount()
     {
       
@@ -61,12 +66,37 @@ class ZAcc extends Component
         if (empty($this->end_date)) {
             $this->end_date = now()->addDay()->toDateString();
         }
+        $this->slider_value = "00:00:00";
+
         $this->selectedSensor = 0;
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
 
         $this->selectedSensor();
      
     
+    }
+    public function getSensorData($sensor)
+    {
+        $chartData = [];
+      
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $sensor);
+        $this->apiData = $response->json();
+        foreach ($this->apiData as $entry) {
+            if (isset($entry['sensors'][$sensor]['data'])) {
+                foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
+                    $timestamp = Carbon::parse($dataPoint['timestamp']);
+                        $zacc = $dataPoint['z-acc'];
+                       
+                }
+                $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $zacc];
+            }
+        }
+        return $chartData;
+    }
+    public function sliderValueChanged($value)
+    {
+        $this->slider_value = $value;
+        $this->dateRangeChanged();
     }
     public function dateRangeChanged()
     {
@@ -86,7 +116,9 @@ class ZAcc extends Component
     {
         $chartData = [];
         $latestTimestamp = null;
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date=' . $start_date .' 00:00:00&end_date='. $end_date .' 00:00:00');
+        $start_date = $start_date ." ". $this->slider_value;
+
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date='.$start_date .'&end_date='. $end_date .' 00:00:00');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
@@ -108,6 +140,8 @@ class ZAcc extends Component
                 $this->zAwarn = $dataPoint['z-acc-warning'];
                 $this->zAbase = $dataPoint['z-acc-baseline'];
                 $this->latestZacc = $dataPoint['z-acc'];
+                $this->olddata = ['x' => $timestamp->format('M d y H:i'), 'y' => $zacc];
+
                 $this->zAccTime = $timestamp->format('M d y H:i');
             }
         }

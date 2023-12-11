@@ -85,6 +85,9 @@
                     <span style="text-align: left;">X Acceleration</span>
 
                     <div style="display: flex; align-items: center;">
+                        <div class="line" style="height: 2px; background-color: gray; margin: 0 10px; width: 50px;">
+                        </div>
+                        <span style="margin-right: 10px;">Base</span>
                         <div class="line" style="height: 2px; background-color: blue; margin: 0 10px; width: 50px;">
                         </div>
                         <span style="margin-right: 10px;">Warning</span>
