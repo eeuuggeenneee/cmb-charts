@@ -545,9 +545,23 @@
             });
 
             function addData(chart, newData) {
-                chart.data.labels.push(newData.x);
-                chart.data.datasets[0].data.push(newData.y);
-                chart.update();
+                const currentData = chart.data;
+
+                if (currentData.labels.length > 0) {
+                    const lastDataIndex = currentData.labels.length - 1;
+                    const lastDataX = currentData.labels[lastDataIndex];
+                    const lastDataY = currentData.datasets[0].data[lastDataIndex];
+
+                    if (lastDataX !== newData.x || lastDataY !== newData.y) {
+                        currentData.labels.push(newData.x);
+                        currentData.datasets[0].data.push(newData.y);
+                        chart.update();
+                    }
+                } else {
+                    currentData.labels.push(newData.x);
+                    currentData.datasets[0].data.push(newData.y);
+                    chart.update();
+                }
             }
 
             let isFirstLoad = true;

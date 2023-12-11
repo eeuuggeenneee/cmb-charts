@@ -9,10 +9,12 @@
                     <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
                         <p class="card-title">Z-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%" href="{{ route('xvel') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%"
+                        href="{{ route('xvel') }}">
                         <p class="card-title">X-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('xacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%"
+                        href="{{ route('xacc') }}">
                         <p class="card-title">X-Axis<br>Acceleration</p>
                     </a>
                     <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
@@ -544,10 +546,25 @@
             });
 
             function addData(chart, newData) {
-                chart.data.labels.push(newData.x);
-                chart.data.datasets[0].data.push(newData.y);
-                chart.update();
+                const currentData = chart.data;
+
+                if (currentData.labels.length > 0) {
+                    const lastDataIndex = currentData.labels.length - 1;
+                    const lastDataX = currentData.labels[lastDataIndex];
+                    const lastDataY = currentData.datasets[0].data[lastDataIndex];
+
+                    if (lastDataX !== newData.x || lastDataY !== newData.y) {
+                        currentData.labels.push(newData.x);
+                        currentData.datasets[0].data.push(newData.y);
+                        chart.update();
+                    }
+                } else {
+                    currentData.labels.push(newData.x);
+                    currentData.datasets[0].data.push(newData.y);
+                    chart.update();
+                }
             }
+
 
             let isFirstLoad = true;
 
