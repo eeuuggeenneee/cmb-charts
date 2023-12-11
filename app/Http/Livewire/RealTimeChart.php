@@ -62,7 +62,7 @@ class RealTimeChart extends Component
             $this->machineName = collect($this->sensorData)->pluck('machineName')->toArray();
         }
         if (empty($this->start_date)) {
-            $this->start_date =  now()->toDateString();
+            $this->start_date =  now()->firstOfMonth()->toDateString();
         }
         if (empty($this->end_date)) {
             $this->end_date = now()->addDay(2)->toDateString();

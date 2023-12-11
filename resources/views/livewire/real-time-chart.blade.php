@@ -1,6 +1,30 @@
 <div>
     <div class="row">
         <div class="col-xl-4 col-sm-12">
+            <div class="container">
+                <div class="row">
+                    <a class="btn btn-success mb-3" style="width: 15%;" href="{{ route('zvel') }}">
+                        <p class="card-title">Z-Axis<br>Velocity</p>
+                    </a>
+                    <a class="btn btn-success mb-3" style="width: 22.5%;" href="{{ route('zacc') }}">
+                        <p class="card-title">Z-Axis<br>Acceleration</p>
+                    </a>
+                    <a class="btn btn-success mb-3" style="width: 15%;" href="{{ route('xvel') }}">
+                        <p class="card-title">X-Axis<br>Velocity</p>
+                    </a>
+                    <a class="btn btn-success mb-3" style="width: 22.5%;" href="{{ route('xacc') }}">
+                        <p class="card-title">X-Axis<br>Acceleration</p>
+                    </a>
+                    <a class="btn btn-success mb-3" style="width: 25%;" href="{{ route('home') }}">
+                        <p>Temperature</p>
+                    </a>
+                </div>
+
+
+            </div>
+
+
+
             <div class="card mb-3">
                 <div class="card-header d-flex align-items-center">
                     <h4 class="mb-0 me-3">Latest Data</h4>
@@ -35,44 +59,60 @@
                     </div>
 
 
-                    <div class="form-group">
-                        <label for="machineSelect">Select Machine:</label>
-                        <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
-                            <option value="machine1">200A</option>
-                            <option value="machine2">200B</option>
-                            <option value="machine3">200C</option>
-                            <option value="machine4">200D</option>
-                            <option value="machine5">90+</option>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="machineSelect">Select Machine:</label>
+                                <select class="form-control" id="machineSelect" onchange="updateSensorOptions()">
+                                    <option value="machine1">200A</option>
+                                    <option value="machine2">200B</option>
+                                    <option value="machine3">200C</option>
+                                    <option value="machine4">200D</option>
+                                    <option value="machine5">90+</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sensorSelect">Select Sensor:</label>
+                                <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
+                                    wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="sensorSelect">Select Sensor:</label>
-                        <select class="form-control" id="sensorSelect" onchange="displaySensorValue()"
-                            wire:model="selectedSensor" wire:change="selectedSensor" wire:ignore>
-                        </select>
-                    </div>
                     <div style="border-top: 1px solid black; margin: 10px 0;">
-                        <label for="sensorSelect" class="text-center mt-3">Filter Date:</label>
-                        <div class="form-group">
-                            <input type="date" wire:ignore class="form-control" id="startDate"
-                                wire:model="start_date" wire:change="dateRangeChanged">
+                        <div class="row ">
+                            <div class="col-5 ">
+                                <label for="startDate" class="text-center mt-3">Filter Date:</label>
+                                <div class="form-group">
+                                    <input type="date" wire:ignore class="form-control" id="startDate"
+                                        wire:model="start_date" wire:change="dateRangeChanged">
+                                </div>
+                            </div>
+                            <div class="col-2 text-center mt-5">
+                                <h6>TO</h6>
+                            </div>
+                            <div class="col-5">
+                                <label for="endDate" class="text-center mt-3">Filter Date:</label>
+                                <div class="form-group">
+                                    <input type="date" wire:ignore class="form-control" id="endDate"
+                                        wire:model="end_date" wire:change="dateRangeChanged">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-3">
+                                <p class="text-center">Time: <span id="demo">{{ $slider_value }}</span></p>
+                                <div class="slidecontainer">
+                                    <input type="range" wire:ignore min="0" max="24" step="0.1"
+                                        value="{{ Str::limit($slider_value, 2, '') }}" class="slider form-control"
+                                        id="myRange" wire:model="slider_value">
+                                </div>
+                            </div>
                         </div>
-                        <h6 class="text-center">TO</h6>
-                        <div class="form-group">
-                            <input type="date" wire:ignore class="form-control" id="endDate" wire:model="end_date"
-                                wire:change="dateRangeChanged">
-                        </div>
-
-                        <p class="text-center mt-3">Time: <span id="demo">{{ $slider_value }}</span></p>
-                        <div class="slidecontainer">
-                            <input type="range" wire:ignore min="0" max="24" step="0.1"
-                                value="{{ Str::limit($slider_value, 2, '') }}" class="slider form-control"
-                                id="myRange" wire:model="slider_value">
-                        </div>
-
-
                     </div>
+
+
                     <h1></h1>
                 </div>
             </div>
@@ -107,6 +147,8 @@
         </div>
     </div>
     <script>
+        var latesttemp = document.getElementById("latesttemp");
+        var latestdegree = document.getElementById("latestdegree");
         const sensorOptions = {
             machine1: [{
                     value: 100,
@@ -247,10 +289,8 @@
             const selectedMachine = document.getElementById("machineSelect").value;
             const sensorSelect = document.getElementById("sensorSelect");
 
-            // Clear existing options
             sensorSelect.innerHTML = "";
 
-            // If a machine is selected, show the sensor options
             if (selectedMachine !== "") {
                 const sensorOptionsList = sensorOptions[selectedMachine];
                 sensorOptionsList.forEach(sensor => {
@@ -409,6 +449,8 @@
 
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
+
+
             Livewire.on('sensorDataUpdated', function(data, tempalarm, tempwarning, tempTime, latestTemp, olddata) {
 
 
@@ -528,6 +570,7 @@
 
             function fetchDataAndAddToChart() {
                 console.log("Selected Sensor " + selectedSensorValue);
+
                 fetch('http://127.0.0.1:8000/api/sensor-data/temp/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
