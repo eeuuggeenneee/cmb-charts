@@ -3,29 +3,35 @@
     <h3 class="ms-3 mt-2">Compressor Health Monitoring</h3>
     <a class="navbar-brand" href="#">
     </a>
+
+    <div class="navbar-text ms-auto">
+        <span id="current-time" class="mx-5"></span>
+    </div>
+
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
-    {{-- <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('home') }}">Temperature</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('xacc') }}">X Acceleration</a>
-
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('xvel') }}">X Velocity</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('zacc') }}">Z Acceleration</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('zvel') }}">Z Velocity</a>
-            </li>
-        </ul>
-    </div> --}}
+ 
+   
 </nav>
+<script>
+    // Function to update the current time
+    function updateTime() {
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var seconds = currentTime.getSeconds();
+
+        minutes = (minutes < 10 ? "0" : "") + minutes;
+        seconds = (seconds < 10 ? "0" : "") + seconds;
+
+        document.getElementById('current-time').innerHTML ="Last Update at " + hours + ":" + minutes + ":" + seconds;
+
+        setTimeout(updateTime, 5000);
+    }
+
+    
+    updateTime();
+</script>

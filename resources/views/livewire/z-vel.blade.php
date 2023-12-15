@@ -573,7 +573,7 @@
                 console.log("Selected Sensor " + selectedSensorValue);
                 var zveltime = document.getElementById("zveltime");
                 var latestzvel = document.getElementById("latestzvel");
-                fetch('http://172.31.4.234:8000/api/sensor-data/z-vel/' + selectedSensorValue)
+                fetch('http://172.31.7.14:8000/api/sensor-data/z-vel/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

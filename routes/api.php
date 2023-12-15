@@ -26,4 +26,4 @@ Route::get('/sensor-data/temp/{sensor}', [RealTimeChart::class, 'getSensorData']
 Route::get('/sensor-data/x-acc/{sensor}', [XAcc::class, 'getSensorData']);
 Route::get('/sensor-data/z-acc/{sensor}', [ZAcc::class, 'getSensorData']);
 Route::get('/sensor-data/x-vel/{sensor}', [XVel::class, 'getSensorData']);
-Route::get('/sensor-data/z-vel/{sensor}', [XVel::class, 'getSensorData']);
+Route::get('/sensor-data/z-vel/{sensor}', [ZVel::class, 'getSensorData']);

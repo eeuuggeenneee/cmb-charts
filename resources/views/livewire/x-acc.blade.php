@@ -9,10 +9,12 @@
                     <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
                         <p class="card-title">Z-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%" href="{{ route('xvel') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%"
+                        href="{{ route('xvel') }}">
                         <p class="card-title">X-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('xacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%"
+                        href="{{ route('xacc') }}">
                         <p class="card-title">X-Axis<br>Acceleration</p>
                     </a>
                     <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
@@ -439,7 +441,7 @@
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
             Livewire.on('sensorDataUpdated', function(data, xAbase, xAalarm, xAwarn, xAccTime, latestXacc,
-            olddata) {
+                olddata) {
 
 
                 var currentDate = new Date();
@@ -571,28 +573,33 @@
             }
 
             function fetchDataAndAddToChart() {
-                console.log("Selected Sensor " + selectedSensorValue);
-                var xacctime = document.getElementById("xacctime");
-                var latestxacc = document.getElementById("latestxacc");
-                fetch('http://172.31.4.234:8000/api/sensor-data/x-acc/' + selectedSensorValue)
-                    .then(response => response.json())
-                    .then(data => {
-                        const reconstructedData = {
-                            x: data[0].x,
-                            y: parseFloat(data[0].y),
-                        };
-                        if (arraysEqual(initialDataFromBackend, reconstructedData)) {
-                            xacctime.innerHTML = data[0].x;
-                            latestxacc.innerHTML = data[0].y;
-                        } else {
-                            xacctime.innerHTML = data[0].x;
-                            latestxacc.innerHTML = data[0].y;
-                            console.log("New data", reconstructedData);
-                            initialDataFromBackend = reconstructedData;
-                            addData(myChart, reconstructedData);
-                        }
-                    })
-                    .catch(error => console.error('Error fetching data:', error));
+                if (isFirstLoad) {
+                    isFirstLoad = false;
+                } else {
+                   
+                    console.log("Selected Sensor " + selectedSensorValue);
+                    var xacctime = document.getElementById("xacctime");
+                    var latestxacc = document.getElementById("latestxacc");
+                    fetch('http://172.31.7.14:8000/api/sensor-data/x-acc/' + selectedSensorValue)
+                        .then(response => response.json())
+                        .then(data => {
+                            const reconstructedData = {
+                                x: data[0].x,
+                                y: parseFloat(data[0].y),
+                            };
+                            if (arraysEqual(initialDataFromBackend, reconstructedData)) {
+                                xacctime.innerHTML = data[0].x;
+                                latestxacc.innerHTML = data[0].y;
+                            } else {
+                                xacctime.innerHTML = data[0].x;
+                                latestxacc.innerHTML = data[0].y;
+                                console.log("New data", reconstructedData);
+                                initialDataFromBackend = reconstructedData;
+                                addData(myChart, reconstructedData);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching data:', error));
+                }
             }
             fetchDataAndAddToChart();
             setInterval(fetchDataAndAddToChart, 1000);

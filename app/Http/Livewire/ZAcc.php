@@ -64,7 +64,7 @@ class ZAcc extends Component
             $this->start_date = now()->firstOfMonth()->toDateString();
         }
         if (empty($this->end_date)) {
-            $this->end_date = now()->addDay()->toDateString();
+            $this->end_date = now()->lastOfMonth()->toDateString();
         }
         $this->slider_value = "00:00:00";
 
