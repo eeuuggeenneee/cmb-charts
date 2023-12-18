@@ -9,10 +9,12 @@
                     <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
                         <p class="card-title">Z-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%" href="{{ route('xvel') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%"
+                        href="{{ route('xvel') }}">
                         <p class="card-title">X-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('xacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%"
+                        href="{{ route('xacc') }}">
                         <p class="card-title">X-Axis<br>Acceleration</p>
                     </a>
                     <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
@@ -38,7 +40,7 @@
                 </ul>
             </div>
 
-              <div class="card mb-2">
+            <div class="card mb-2">
                 <div class="card-header">
                     <strong>Filter</strong>
                 </div>
@@ -111,7 +113,12 @@
                     <h1></h1>
                 </div>
             </div>
-
+            <a class="btn btn-success mb-3 disabled" style="width: 49%; margin-right: 1%" href="{{ route('daily') }}">
+                <p class="card-title">Daily<br>Forecast</p>
+            </a>
+            <a class="btn btn-success mb-3 disabled" style="width: 49%; " href="">
+                <p class="card-title">Weekly<br>Forecast</p>
+            </a>
         </div>
         <div class="col-xl-8 col-sm-12">
             <div class="card">
@@ -438,7 +445,8 @@
 
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
-            Livewire.on('sensorDataUpdated', function(data,zValarm, zVwarn, zVbase, latestZvel, zVelTime, olddata) {
+            Livewire.on('sensorDataUpdated', function(data, zValarm, zVwarn, zVbase, latestZvel, zVelTime,
+            olddata) {
 
 
                 var currentDate = new Date();

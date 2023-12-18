@@ -1,46 +1,11 @@
 <div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <div class="row">
-        <div class="col-xl-4 col-sm-12">
-            <div class="container">
-                <div class="row">
-                    <a class="btn btn-success mb-3" style="width: 15%; margin-right: 1%" href="{{ route('zvel') }}">
-                        <p class="card-title">Z-Axis<br>Velocity</p>
-                    </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
-                        <p class="card-title">Z-Axis<br>Acceleration</p>
-                    </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%"
-                        href="{{ route('xvel') }}">
-                        <p class="card-title">X-Axis<br>Velocity</p>
-                    </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%"
-                        href="{{ route('xacc') }}">
-                        <p class="card-title">X-Axis<br>Acceleration</p>
-                    </a>
-                    <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
-                        <p>Temperature</p>
-                    </a>
-                </div>
-            </div>
-            <div class="card mb-3">
-                <div class="card-header d-flex align-items-center">
-                    <h4 class="mb-0 me-3">Latest Data</h4>
-                    <span class="display-4 ms-auto" style="font-size: 1rem;"><strong><span
-                                id="xveltime"></span></strong></span>
-                </div>
+        <div class="col-xl-4 col-sm-12 ">
+          
+           
 
-
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item text-center">
-
-                        <i class="fas fa-shuttle-space fa-3x mr-3 blink-green" id="blinkingIcon"></i>
-
-                        <span class="display-4"><strong><span id="latestxvel"></span>mm/s</strong></span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="card mb-2">
+            <div class="card mb-2 d-none" >
                 <div class="card-header">
                     <strong>Filter</strong>
                 </div>
@@ -114,23 +79,27 @@
                 </div>
             </div>
 
-        </div>
-        <div class="col-xl-8 col-sm-12">
+        </div> 
+   
+        <div class="col-xl-12 col-sm-12">
+            <a class="btn btn-primary mb-3 " style="width: 10%; left: 0px;" href="{{ route('home') }}">
+                <p class="card-title"><i class="fa-solid fa-arrow-left"></i> Go Back<br></p>
+            </a>
             <div class="card">
                 <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
-
-                    <span style="text-align: left;">X Velocity</span>
+                    
+                    <span style="text-align: left;">Temperature</span>
 
                     <div style="display: flex; align-items: center;">
                         <div class="line" style="height: 2px; background-color: rgb(255, 99, 132); margin: 0 10px; width: 50px;">
                         </div>
-                        <span style="margin-right: 10px;">Raw Data</span>
+                        <span style="margin-right: 10px;">Median</span>
                         <div class="line" style="height: 2px; background-color: rgb(0, 100, 0); margin: 0 10px; width: 50px;">
                         </div>
                         <span style="margin-right: 10px;">Forecast</span>
                         <div class="line" style="height: 2px; background-color: rgb(169,169,169,0.5); margin: 0 10px; width: 50px;">
                         </div>
-                        <span>Forecast Range</span>
+                        <span>95% CI</span>
                     </div>
 
                 </div>
@@ -477,10 +446,6 @@
 
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
-
-
-
-
         });
     </script>
 

@@ -51,7 +51,7 @@ class Forecast extends Component
         $max = [];
         $today = Carbon::today();
 
-        $response = Http::get('http://172.31.3.40:5000/get_forecast/' . $sensor . '/x-vel/1D');
+        $response = Http::get('http://172.31.3.40:5000/get_forecast/' . $sensor . '/temp/1D');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             $timestamp = Carbon::parse($entry['date']);
@@ -100,7 +100,7 @@ class Forecast extends Component
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
                     $timestamp = Carbon::parse($dataPoint['date']);
-                    $xvel = $dataPoint['median x-vel'];
+                    $xvel = $dataPoint['median temp'];
                     $chartData[] = ['x' => $timestamp->format('M d y'), 'y' => $xvel];
                 }
             }

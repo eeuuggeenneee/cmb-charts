@@ -113,7 +113,12 @@
                     <h1></h1>
                 </div>
             </div>
-
+            <a class="btn btn-success mb-3 disabled" style="width: 49%; margin-right: 1%" href="{{ route('daily') }}">
+                <p class="card-title">Daily<br>Forecast</p>
+            </a>
+            <a class="btn btn-success mb-3 disabled" style="width: 49%; " href="">
+                <p class="card-title">Weekly<br>Forecast</p>
+            </a>
         </div>
         <div class="col-xl-8 col-sm-12">
             <div class="card">
@@ -576,7 +581,7 @@
                 if (isFirstLoad) {
                     isFirstLoad = false;
                 } else {
-                   
+
                     console.log("Selected Sensor " + selectedSensorValue);
                     var xacctime = document.getElementById("xacctime");
                     var latestxacc = document.getElementById("latestxacc");

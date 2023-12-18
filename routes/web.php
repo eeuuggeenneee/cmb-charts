@@ -35,9 +35,9 @@ Route::get('/z-acceleration', function () {
     return view('zacc');
 })->name('zacc');
 
-Route::get('/five-sensor', function () {
+Route::get('/daily', function () {
     return view('five');
-})->name('five');
+})->name('daily');
 
 Route::get('/test', function () {
     return view('livewire.forecast');
