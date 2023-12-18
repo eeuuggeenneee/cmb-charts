@@ -7,6 +7,7 @@ use App\Http\Livewire\XAcc;
 use App\Http\Livewire\ZAcc;
 use App\Http\Livewire\XVel;
 use App\Http\Livewire\ZVel;
+use App\Http\Livewire\Forecast;
 /*
 
 |--------------------------------------------------------------------------
@@ -27,3 +28,5 @@ Route::get('/sensor-data/x-acc/{sensor}', [XAcc::class, 'getSensorData']);
 Route::get('/sensor-data/z-acc/{sensor}', [ZAcc::class, 'getSensorData']);
 Route::get('/sensor-data/x-vel/{sensor}', [XVel::class, 'getSensorData']);
 Route::get('/sensor-data/z-vel/{sensor}', [ZVel::class, 'getSensorData']);
+
+Route::get('/forecast-data/x-vel/{sensor}', [Forecast::class, 'getForecastData']);

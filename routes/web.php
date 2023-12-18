@@ -39,6 +39,11 @@ Route::get('/five-sensor', function () {
     return view('five');
 })->name('five');
 
+Route::get('/test', function () {
+    return view('livewire.forecast');
+})->name('forecast');
+
+
 
 
 

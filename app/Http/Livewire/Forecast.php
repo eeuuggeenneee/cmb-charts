@@ -2,22 +2,22 @@
 
 namespace App\Http\Livewire;
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use Carbon\Carbon;
 
-class XVel extends Component
+class Forecast extends Component
 {
     public $chartData;
     public $apiData;
     public $initialData;
-    public $selectedSensor = 0;
+    public $selectedSensor;
     public $sensorData;
     public $machineData;
     public $sensorNames;
     public $machineName;
     public $latestTimestamp;
-  
+
     public $xValarm;
     public $xVwarn;
     public $xVbase;
@@ -35,36 +35,45 @@ class XVel extends Component
         if (empty($this->start_date)) {
             $this->start_date = now()->firstOfMonth()->toDateString();
         }
-    
+
         if (empty($this->end_date)) {
             $this->end_date = now()->lastOfMonth()->toDateString();
         }
         $this->slider_value = "00:00:00";
+        $this->selectedSensor = 0;
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData, $this->xValarm, $this->xVwarn, $this->xVbase);
     }
-    public function getSensorData($sensor)
+    public function getForecastData($sensor)
     {
-        $chartData = [];
-      
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $sensor);
+        $forecastData = [];
+        $min = [];
+        $max = [];
+        $today = Carbon::today();
+
+        $response = Http::get('http://172.31.3.40:5000/get_forecast/' . $sensor . '/x-vel/1D');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
-            if (isset($entry['sensors'][$sensor]['data'])) {
-                foreach ($entry['sensors'][$sensor]['data'] as $dataPoint) {
-                    $timestamp = Carbon::parse($dataPoint['timestamp']);
-                        $xvel = $dataPoint['x-vel'];
-                       
-                }
-                $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
+            $timestamp = Carbon::parse($entry['date']);
+            if ($timestamp->greaterThanOrEqualTo($today)) {
+                $xvel = $entry['val'];
+                $xvel_max = $entry['val_max'];
+                $xvel_min = $entry['val_min'];
+                $forecastData[] = ['x' => $timestamp->format('M d y'), 'y' => $xvel];
+                $min[] = ['x' => $timestamp->format('M d y'), 'y' => $xvel_min];
+                $max[] = ['x' => $timestamp->format('M d y'), 'y' => $xvel_max];
             }
         }
-        return $chartData;
+        return [
+            'forecastData' => $forecastData,
+            'min' => $min,
+            'max' => $max,
+        ];
     }
     public function dateRangeChanged()
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
-        $this->emit('sensorDataUpdated', $chartData,$this->xValarm ,$this->xVwarn, $this->xVbase, $this->latestXvel, $this->xVelTime);
+        $this->emit('sensorDataUpdated', $chartData, $this->xValarm, $this->xVwarn, $this->xVbase, $this->latestXvel, $this->xVelTime);
     }
     public function sliderValueChanged($value)
     {
@@ -81,54 +90,43 @@ class XVel extends Component
         }
     }
 
-    public function sensor($selectedSensor, $start_date, $end_date)
+    public function sensor($selectedSensor, $start_date)
     {
         $chartData = [];
         $latestTimestamp = null;
-        $start_date = $start_date ." ". $this->slider_value;
-
-        $response = Http::get('http://172.31.2.124:5000/cbmdata/rawdata?sensor_ids=' . $selectedSensor . '&start_date='.$start_date .'&end_date='. $end_date .' 00:00:00');
+        $response = Http::get('http://172.31.2.124:5000/cbmdata/dailydata?sensor_ids=' . $selectedSensor . '&start_date=2023-12-01');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {
             if (isset($entry['sensors'][$selectedSensor]['data'])) {
                 foreach ($entry['sensors'][$selectedSensor]['data'] as $dataPoint) {
-                    $timestamp = Carbon::parse($dataPoint['timestamp']);
-                    //if (Carbon::parse($timestamp) >= "2023-12-05 12:00:00") {
-                    if (!$latestTimestamp || $timestamp->diffInMinutes($latestTimestamp) >= 5) {
-                        $xvel = $dataPoint['x-vel'];
-                      
-                        $chartData[] = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
-                        $latestTimestamp = $timestamp;
-                    }else{
-            
-                    }
-                    //}
-                  
+                    $timestamp = Carbon::parse($dataPoint['date']);
+                    $xvel = $dataPoint['median x-vel'];
+                    $chartData[] = ['x' => $timestamp->format('M d y'), 'y' => $xvel];
                 }
-                $this->xValarm = $dataPoint['x-vel-alarm'];
-                $this->xVwarn = $dataPoint['x-vel-warning'];
-                $this->xVbase = $dataPoint['x-vel-baseline'];
-                $this->latestXvel = $dataPoint['x-vel'];
-                $this->olddata = ['x' => $timestamp->format('M d y H:i'), 'y' => $xvel];
-
-                $this->xVelTime = $timestamp->format('M d y H:i');
             }
         }
 
-   
+        usort($chartData, function ($a, $b) {
+            return strtotime($a['x']) - strtotime($b['x']);
+        });
+
         return $chartData;
     }
     public function selectedSensor()
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
-        $this->emit('sensorDataUpdated', $chartData,$this->xValarm ,$this->xVwarn, $this->xVbase, $this->latestXvel, $this->xVelTime);
+        $this->emit('sensorDataUpdated', $chartData, $this->xValarm, $this->xVwarn, $this->xVbase, $this->latestXvel, $this->xVelTime);
     }
-
     public function render()
+
     {
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
-        return view('livewire.x-vel', [
+        $forecastData = $this->getForecastData($this->selectedSensor);
+        return view('livewire.forecast', [
             'data' => $chartData,
+            'forecast' => $forecastData['forecastData'],
+            'min' => $forecastData['min'],
+            'max' => $forecastData['max'],
             'sensorNames' => $this->sensorNames,
             'machineName' => $this->machineName,
 
