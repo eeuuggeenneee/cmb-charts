@@ -1,10 +1,11 @@
 <div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <div class="row">
+  
         <div class="col-xl-4 col-sm-12 ">
           
            
-
+            
             <div class="card mb-2 d-none" >
                 <div class="card-header">
                     <strong>Filter</strong>
@@ -82,13 +83,15 @@
         </div> 
    
         <div class="col-xl-12 col-sm-12">
+  
             <a class="btn btn-primary mb-3 " style="width: 10%; left: 0px;" href="{{ route('home') }}">
                 <p class="card-title"><i class="fa-solid fa-arrow-left"></i> Go Back<br></p>
             </a>
+
             <div class="card">
                 <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
                     
-                    <span style="text-align: left;">Temperature</span>
+                    <span style="text-align: left;">Temperature - Sensor 200A NDE</span>
 
                     <div style="display: flex; align-items: center;">
                         <div class="line" style="height: 2px; background-color: rgb(255, 99, 132); margin: 0 10px; width: 50px;">

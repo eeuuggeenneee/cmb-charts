@@ -9,10 +9,12 @@
                     <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('zacc') }}">
                         <p class="card-title">Z-Axis<br>Acceleration</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%" href="{{ route('xvel') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 15%; margin-right: 1%"
+                        href="{{ route('xvel') }}">
                         <p class="card-title">X-Axis<br>Velocity</p>
                     </a>
-                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%" href="{{ route('xacc') }}">
+                    <a class="btn btn-success mb-3 mr-2" style="width: 22%; margin-right: 1%"
+                        href="{{ route('xacc') }}">
                         <p class="card-title">X-Axis<br>Acceleration</p>
                     </a>
                     <a class="btn btn-success mb-3" style="width: 22%;" href="{{ route('home') }}">
@@ -150,7 +152,6 @@
         </div>
     </div>
     <script>
-
         const sensorOptions = {
             machine1: [{
                     value: 100,
@@ -411,6 +412,12 @@
                         },
                     },
                     plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                color: 'rgb(255, 99, 132)'
+                            }
+                        },
                         annotation: {
                             annotations: {
                                 line1: {
@@ -445,7 +452,7 @@
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
             Livewire.on('sensorDataUpdated', function(data, xValarm, xVwarn, xVbase, latestXvel, xVelTime,
-            olddata) {
+                olddata) {
 
 
                 var currentDate = new Date();
@@ -518,6 +525,12 @@
                             }],
                         },
                         plugins: {
+                            legend: {
+                                display: false,
+                                labels: {
+                                    color: 'rgb(255, 99, 132)'
+                                }
+                            },
                             annotation: {
                                 annotations: {
                                     line1: {
@@ -580,7 +593,7 @@
                 console.log("Selected Sensor " + selectedSensorValue);
                 var xveltime = document.getElementById("xveltime");
                 var latestxvel = document.getElementById("latestxvel");
-                fetch('http://172.31.7.14:8000/api/sensor-data/x-vel/' + selectedSensorValue)
+                fetch('http://172.31.7.252:8000/api/sensor-data/x-vel/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

@@ -412,6 +412,12 @@
                         },
                     },
                     plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                color: 'rgb(255, 99, 132)'
+                            }
+                        },
                         annotation: {
                             annotations: {
                                 line1: {
@@ -519,6 +525,12 @@
                             }],
                         },
                         plugins: {
+                            legend: {
+                                display: false,
+                                labels: {
+                                    color: 'rgb(255, 99, 132)'
+                                }
+                            },
                             annotation: {
                                 annotations: {
                                     line1: {
@@ -585,7 +597,7 @@
                     console.log("Selected Sensor " + selectedSensorValue);
                     var xacctime = document.getElementById("xacctime");
                     var latestxacc = document.getElementById("latestxacc");
-                    fetch('http://172.31.7.14:8000/api/sensor-data/x-acc/' + selectedSensorValue)
+                    fetch('http://172.31.7.252:8000/api/sensor-data/x-acc/' + selectedSensorValue)
                         .then(response => response.json())
                         .then(data => {
                             const reconstructedData = {

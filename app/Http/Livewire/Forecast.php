@@ -49,8 +49,8 @@ class Forecast extends Component
         $forecastData = [];
         $min = [];
         $max = [];
-        $today = Carbon::today();
-
+        $today = Carbon::today()->addDay(-2);
+       
         $response = Http::get('http://172.31.3.40:5000/get_forecast/' . $sensor . '/temp/1D');
         $this->apiData = $response->json();
         foreach ($this->apiData as $entry) {

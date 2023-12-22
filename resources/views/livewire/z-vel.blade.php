@@ -412,6 +412,12 @@
                         },
                     },
                     plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                color: 'rgb(255, 99, 132)'
+                            }
+                        },
                         annotation: {
                             annotations: {
                                 line1: {
@@ -446,7 +452,7 @@
             var myChart = new Chart(canvas, config);
             var initialDataFromBackend = @json($olddata);
             Livewire.on('sensorDataUpdated', function(data, zValarm, zVwarn, zVbase, latestZvel, zVelTime,
-            olddata) {
+                olddata) {
 
 
                 var currentDate = new Date();
@@ -519,6 +525,12 @@
                             }],
                         },
                         plugins: {
+                            legend: {
+                                display: false,
+                                labels: {
+                                    color: 'rgb(255, 99, 132)'
+                                }
+                            },
                             annotation: {
                                 annotations: {
                                     line1: {
@@ -581,7 +593,7 @@
                 console.log("Selected Sensor " + selectedSensorValue);
                 var zveltime = document.getElementById("zveltime");
                 var latestzvel = document.getElementById("latestzvel");
-                fetch('http://172.31.7.14:8000/api/sensor-data/z-vel/' + selectedSensorValue)
+                fetch('http://172.31.7.252:8000/api/sensor-data/z-vel/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

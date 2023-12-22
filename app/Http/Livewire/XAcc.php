@@ -58,12 +58,11 @@ class XAcc extends Component
         }
         //dd($this->sensorData);
         if (empty($this->start_date)) {
-            $this->start_date = now()->firstOfMonth()->toDateString();
+            $this->start_date = now()->startOfWeek()->toDateString();
         }
         if (empty($this->end_date)) {
-            $this->end_date = now()->lastOfMonth()->toDateString();
+            $this->end_date = now()->endOfWeek()->toDateString();
         }
-
         $chartData = $this->sensor($this->selectedSensor, $this->start_date, $this->end_date);
         $this->emit('sensorDataUpdated', $chartData,$this->xAbase ,$this->xAalarm, $this->xAwarn, $this->xAccTime, $this->latestXacc);
     }

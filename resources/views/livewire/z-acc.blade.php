@@ -412,6 +412,12 @@
                         },
                     },
                     plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                color: 'rgb(255, 99, 132)'
+                            }
+                        },
                         annotation: {
                             annotations: {
                                 line1: {
@@ -519,6 +525,12 @@
                             }],
                         },
                         plugins: {
+                            legend: {
+                                display: false,
+                                labels: {
+                                    color: 'rgb(255, 99, 132)'
+                                }
+                            },
                             annotation: {
                                 annotations: {
                                     line1: {
@@ -582,7 +594,7 @@
             function fetchDataAndAddToChart() {
                 console.log("Selected Sensor " + selectedSensorValue);
 
-                fetch('http://172.31.7.14:8000/api/sensor-data/z-acc/' + selectedSensorValue)
+                fetch('http://172.31.7.252:8000/api/sensor-data/z-acc/' + selectedSensorValue)
                     .then(response => response.json())
                     .then(data => {
                         const reconstructedData = {

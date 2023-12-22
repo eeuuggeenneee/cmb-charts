@@ -29,4 +29,4 @@ Route::get('/sensor-data/z-acc/{sensor}', [ZAcc::class, 'getSensorData']);
 Route::get('/sensor-data/x-vel/{sensor}', [XVel::class, 'getSensorData']);
 Route::get('/sensor-data/z-vel/{sensor}', [ZVel::class, 'getSensorData']);
 
-Route::get('/forecast-data/x-vel/{sensor}', [Forecast::class, 'getForecastData']);
+// Route::get('/forecast-data/x-vel/{sensor}', [Forecast::class, 'getForecastData']);
